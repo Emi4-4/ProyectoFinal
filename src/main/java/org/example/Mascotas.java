@@ -17,7 +17,7 @@ public abstract class Mascotas {
 
 
 
-    public abstract void alimentar();
+    public abstract String alimentar();
 
     public abstract void jugar();
 
