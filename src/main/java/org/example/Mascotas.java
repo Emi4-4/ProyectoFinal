@@ -17,7 +17,10 @@ public abstract class Mascotas {
         this.nivelHigiene = 100;
     }
 
-
+    public int getId(){ return id;
+    }
+    public String getNombre(){ return nombre;
+    }
     //Getter y Setter (Hambre):
     public int getNivelHambre() {
         return nivelHambre;

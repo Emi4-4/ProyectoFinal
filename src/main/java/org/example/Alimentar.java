@@ -1,20 +1,28 @@
 package org.example;
 
 public class Alimentar implements Actividad {
-    private Suministro suministro;
+    private Deposito<Suministro> inventarioSuministros;
 
-    public Alimentar(Suministro suministro){
-        this.suministro = suministro;
+    public Alimentar(Deposito<Suministro> inventarioSuministros){
+        this.inventarioSuministros=inventarioSuministros;
     }
     @Override
     public void realizar(Mascotas mascota){
-        if(suministro.getTipo() == mascota.getAlimentoPermitido()){
-            mascota.setNivelHambre(
-                    mascota.getNivelHambre() - suministro.getTipo().getEfecto());
-            System.out.println("La mascota fue alimentaada");
-        } else {
-            System.out.println("La mascota no puede consumir esto");
+        Suministro comidaAdecuada = inventarioSuministros.buscarElemento(
+                suministro -> suministro.getTipo() == mascota.getAlimentoPermitido()
+        );
+        if (comidaAdecuada == null) {
+            System.out.println("No quedan existencias de " + mascota.getAlimentoPermitido() + " en el inventario.");
+            return;
         }
+
+        int hambreActual = mascota.getNivelHambre();
+        int efectoComida = comidaAdecuada.getTipo().getEfecto();
+        mascota.setNivelHambre(hambreActual - efectoComida);
+
+        inventarioSuministros.getProducto();
+        System.out.println(mascota.getNombre() + " ha sido alimentado.");
+        System.out.println("Hambre actual: " + mascota.getNivelHambre() + "/100");
     }
 
 }
