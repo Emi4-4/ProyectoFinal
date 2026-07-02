@@ -7,7 +7,8 @@ public enum TipoSuministro {
     ALIMENTO_GATO(1200, 25),
     ALIMENTO_PEZ(500, 15),
     ALIMENTO_PAJARO(800, 20),
-    MEDICINA(5000, 40);
+    MEDICINA(5000, 40),
+    SHAMPOO(2000, 60);
 
     private final int precio;
     private final int efecto;

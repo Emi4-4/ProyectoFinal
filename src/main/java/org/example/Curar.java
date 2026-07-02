@@ -1,9 +1,31 @@
 package org.example;
 
 public class Curar implements Actividad {
+
+    private Deposito<Suministro> inventario;
+
+    public Curar(Deposito<Suministro> inventario){
+        this.inventario = inventario;
+    }
+
     @Override
     public void realizar(Mascotas mascota){
-        mascota.setNivelSalud(mascota.getNivelFelicidad()+10);
-        mascota.setNivelHigiene(mascota.getNivelSalud()+20);
+
+        Suministro medicina = inventario.buscarElemento(
+                s -> s.getTipo() == TipoSuministro.MEDICINA
+        );
+
+        if(medicina == null){
+            System.out.println("No quedan medicinas.");
+            return;
+        }
+
+        int efecto = medicina.getTipo().getEfecto();
+        mascota.setNivelSalud(mascota.getNivelSalud() + efecto);
+
+        inventario.getProducto();
+
+        System.out.println(mascota.getNombre() + " ha sido curado.");
+        System.out.println("Salud: " + mascota.getNivelSalud() + "/100");
     }
 }
