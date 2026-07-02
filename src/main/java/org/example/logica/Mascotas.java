@@ -1,4 +1,4 @@
-package org.example;
+package org.example.logica;
 
 // Esta clase será parecida a la de Producto en la tarea 1
 public abstract class Mascotas {

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.logica;
 
 abstract class Perro extends Mascotas{
     public Perro(int id, String nombre, String tipo) {

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.logica;
 
 public class Suministro {
     TipoSuministro tipo;

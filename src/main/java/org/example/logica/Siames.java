@@ -1,4 +1,4 @@
-package org.example;
+package org.example.logica;
 
 public class Siames extends Gato {
     public Siames(int id, String nombre, String tipo) {

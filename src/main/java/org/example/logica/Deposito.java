@@ -1,4 +1,4 @@
-package org.example;
+package org.example.logica;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;

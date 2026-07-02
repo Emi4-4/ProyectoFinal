@@ -1,4 +1,4 @@
-package org.example;
+package org.example.logica;
 
 public class Alimentar implements Actividad {
     private Deposito<Suministro> inventarioSuministros;
