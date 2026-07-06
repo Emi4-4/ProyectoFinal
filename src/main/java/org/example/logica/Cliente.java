@@ -17,8 +17,7 @@ public class Cliente {
     }
 
     public String sonidomascotaComprada(Mascotas mascota) {
-        // hay que agregar
-        return "sonidoMascota";
+        return mascota.emitirSonido();
     }
 
     public void comprarMascota(Mascotas mascota, int precio) {
@@ -33,5 +32,6 @@ public class Cliente {
     public int getPresupuesto(){
         return this.vuelto;
     }
+
 
 }

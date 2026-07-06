@@ -7,6 +7,8 @@ public abstract class Mascotas {
     private int nivelHambre, nivelFelicidad, nivelSalud, nivelHigiene;
     public abstract TipoSuministro getAlimentoPermitido();
 
+    public abstract String emitirSonido();
+
     public Mascotas(int id, String nombre, String tipo) {
         this.id = id;
         this.nombre = nombre;
@@ -79,5 +81,11 @@ public abstract class Mascotas {
         } else {
             this.nivelSalud = nivelSalud; // Cualquier valor normal entre 0 y 100
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %-3d | %-10s (%-6s) | Hambre: %-3d | Fel: %-3d | Hig: %-3d | Sal: %-3d\n",
+                id, nombre, tipo, nivelHambre, nivelFelicidad, nivelHigiene, nivelSalud);
     }
 }

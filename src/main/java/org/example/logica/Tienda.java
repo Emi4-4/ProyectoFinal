@@ -15,9 +15,8 @@ public class Tienda {
         this.presupuesto = presupuestoInicial;
         this.inventarioMascotas=new Deposito<>();
         this.inventarioSuministros =new Deposito<>();
-        presupuesto=20000;
         this.random =new Random();
-
+        inicializarSuministros();
     }
 
     public Cliente generarCliente() {
@@ -39,6 +38,14 @@ public class Tienda {
             return true;
         }
         return false;
+    }
+
+    public String obtenerEstadoMascotas() {
+        StringBuilder sb = new StringBuilder();
+        for (Mascotas m : inventarioMascotas.obtenerTodos()) {
+            sb.append(m.toString());
+        }
+        return sb.toString();
     }
 
     private void inicializarSuministros() {
