@@ -11,7 +11,8 @@ public class Tienda {
     private String[] tipoMascotas = {"Perro", "Gato", "Pez", "Pájaro"};
     private String[] nombresClientes = {"Ana", "Carlos", "María", "Juan"};
 
-    public Tienda(){
+    public Tienda(int presupuestoInicial){
+        this.presupuesto = presupuestoInicial;
         this.inventarioMascotas=new Deposito<>();
         this.inventarioSuministros =new Deposito<>();
         presupuesto=20000;
