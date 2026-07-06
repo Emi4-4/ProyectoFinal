@@ -25,6 +25,10 @@ public class Deposito<E> {
         }
     }
 
+     public boolean removerElemento(E elemento) {
+         return elementos.remove(elemento);
+     }
+
      public E buscarElemento(Predicate<E> condicion) {
          for (E e : elementos) {
              if (condicion.test(e)) {

@@ -20,7 +20,7 @@ public class Alimentar implements Actividad {
         int efectoComida = comidaAdecuada.getTipo().getEfecto();
         mascota.setNivelHambre(hambreActual - efectoComida);
 
-        inventarioSuministros.getProducto();
+        inventarioSuministros.removerElemento(comidaAdecuada);
         System.out.println(mascota.getNombre() + " ha sido alimentado.");
         System.out.println("Hambre actual: " + mascota.getNivelHambre() + "/100");
     }
