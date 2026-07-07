@@ -7,8 +7,6 @@ public class Tienda {
     private int presupuesto;
     private Random random;
 
-    private String[] nombreMascotas = {"Pepa", "Firulais", "Luna", "Juan"};
-    private String[] tipoMascotas = {"Perro", "Gato", "Pez", "Pájaro"};
     private String[] nombresClientes = {"Ana", "Carlos", "María", "Juan"};
 
     public Tienda(int presupuestoInicial){
@@ -16,7 +14,6 @@ public class Tienda {
         this.inventarioMascotas=new Deposito<>();
         this.inventarioSuministros =new Deposito<>();
         this.random =new Random();
-        inicializarSuministros();
     }
 
     public Cliente generarCliente() {
@@ -48,17 +45,6 @@ public class Tienda {
         return sb.toString();
     }
 
-    private void inicializarSuministros() {
-        // Agregar suministros iniciales
-        for (int i = 0; i < 4; i++) {
-            inventarioSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PERRO));
-            inventarioSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_GATO));
-            inventarioSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PEZ));
-            inventarioSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PAJARO));
-            inventarioSuministros.addProducto(new Suministro(TipoSuministro.MEDICINA));
-            inventarioSuministros.addProducto(new Suministro(TipoSuministro.SHAMPOO));
-        }
-    }
     public void comprarSuministro(TipoSuministro tipo, int cantidad){
         int costo = tipo.getPrecio() * cantidad;
         if (presupuesto >= costo) {

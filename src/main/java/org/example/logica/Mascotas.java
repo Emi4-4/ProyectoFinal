@@ -21,6 +21,11 @@ public abstract class Mascotas {
 
     public int getId(){ return id;
     }
+
+    public String getTipo() {
+        return tipo;
+    }
+
     public String getNombre(){ return nombre;
     }
     //Getter y Setter (Hambre):
