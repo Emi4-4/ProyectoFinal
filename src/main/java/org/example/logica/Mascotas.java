@@ -1,12 +1,15 @@
 package org.example.logica;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Esta clase será parecida a la de Producto en la tarea 1
 public abstract class Mascotas {
-    private int id;
+    private final int id;
     private String nombre, tipo;
     private int nivelHambre, nivelFelicidad, nivelSalud, nivelHigiene;
+    private final List<MascotaObserver> observadores = new ArrayList<>();
     public abstract TipoSuministro getAlimentoPermitido();
-
     public abstract String emitirSonido();
 
     public Mascotas(int id, String nombre, String tipo) {
@@ -17,6 +20,33 @@ public abstract class Mascotas {
         this.nivelHambre = 50;
         this.nivelSalud = 100;
         this.nivelHigiene = 100;
+    }
+
+    /**
+     * Registra un observador que será notificado ante cualquier cambio
+     * de estado de la mascota.
+     *
+     * @param observador observador a registrar
+     */
+    public void agregarObservador(MascotaObserver observador) {
+        if (observador != null) {
+            observadores.add(observador);
+        }
+    }
+
+    /**
+     * Elimina un observador previamente registrado.
+     *
+     * @param observador observador a remover
+     */
+    public void removerObservador(MascotaObserver observador) {
+        observadores.remove(observador);
+    }
+
+    private void notificarObservadores() {
+        for (MascotaObserver o : observadores) {
+            o.onEstadoActualizado(this);
+        }
     }
 
     public int getId(){ return id;
