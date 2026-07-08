@@ -23,11 +23,15 @@ import java.util.List;
  */
 public class VentanaPrincipal extends JFrame {
     private Tienda tienda;
-    private final Proveedor proveedor = Proveedor.getInstancia();
     private final JLabel lblPresupuesto = new JLabel();
     private final JPanel panelMascotas = new JPanel();
     private final JTextArea areaRegistro = new JTextArea();
     private final SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+
+    public void actualizarVentana() {
+        refrescarMascotas();
+        actualizarPresupuesto();
+    }
 
     public VentanaPrincipal(Tienda tienda) {
         /**
@@ -44,21 +48,29 @@ public class VentanaPrincipal extends JFrame {
 
         add(construirPanelSuperior(), BorderLayout.NORTH);
         add(construirPanelCentral(), BorderLayout.CENTER);
-        add(construirPanelProveedor(), BorderLayout.EAST);
         add(construirPanelRegistro(), BorderLayout.SOUTH);
 
         refrescarMascotas();
         actualizarPresupuesto();
         iniciarSimulacionClientes();
+
     }
+    private final Proveedor proveedor = new Proveedor();
+
     private JPanel construirPanelSuperior() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(8, 12, 4, 12));
         lblPresupuesto.setFont(lblPresupuesto.getFont().deriveFont(Font.BOLD, 16f));
         panel.add(new JLabel(IconLoader.obtenerIconoMascota(null, 32)), BorderLayout.WEST);
         panel.add(lblPresupuesto, BorderLayout.CENTER);
+        JButton btnProveedor = new JButton("Proveedor");
+        btnProveedor.addActionListener(e ->
+                new VentanaProveedor(this, tienda, proveedor).setVisible(true)
+        );
+        panel.add(btnProveedor, BorderLayout.EAST);
         return panel;
     }
+
     private JScrollPane construirPanelCentral() {
         panelMascotas.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         panelMascotas.setBorder(new TitledBorder("Mis mascotas (clic para ver detalle y cuidarlas)"));
@@ -67,38 +79,6 @@ public class VentanaPrincipal extends JFrame {
         return scroll;
     }
 
-    private JPanel construirPanelProveedor() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(new TitledBorder("Tienda del Proveedor"));
-        panel.setPreferredSize(new Dimension(230, 0));
-
-        panel.add(botonComprarMascota("Gato", 8000));
-        panel.add(botonComprarMascota("Perro", 10000));
-        panel.add(botonComprarMascota("Pez", 3000));
-        panel.add(botonComprarMascota("Pájaro", 5000));
-        panel.add(Box.createVerticalStrut(12));
-
-        for (TipoSuministro tipo : TipoSuministro.values()) {
-            panel.add(botonComprarSuministro(tipo));
-        }
-
-        return panel;
-    }
-
-    private JButton botonComprarMascota(String tipo, int precioReferencia) {
-        JButton boton = new JButton("Comprar " + tipo + " (~$" + precioReferencia + ")");
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boton.addActionListener(e -> comprarMascotaDelProveedor(tipo));
-        return boton;
-    }
-
-    private JButton botonComprarSuministro(TipoSuministro tipo) {
-        JButton boton = new JButton("Comprar " + tipo + " ($" + tipo.getPrecio() + ")");
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boton.addActionListener(e -> comprarSuministroDelProveedor(tipo));
-        return boton;
-    }
 
     private JScrollPane construirPanelRegistro() {
         areaRegistro.setEditable(false);
@@ -109,34 +89,6 @@ public class VentanaPrincipal extends JFrame {
         return scroll;
     }
 
-    // Acciones con el proveedor
-    private void comprarMascotaDelProveedor(String tipo) {
-        Mascotas candidata = proveedor.getStockMascotas().buscarElemento(m -> m.getTipo().equals(tipo));
-        if (candidata == null) {
-            log("El proveedor no tiene más mascotas de tipo " + tipo + " disponibles.");
-            return;
-        }
-        try {
-            proveedor.venderMascota(tienda, candidata.getId());
-            log("Compraste a " + candidata.getNombre() + " (" + tipo + ") al proveedor.");
-        } catch (MascotaNoEncontradaException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se pudo comprar", JOptionPane.WARNING_MESSAGE);
-        } finally {
-            refrescarMascotas();
-            actualizarPresupuesto();
-        }
-    }
-
-    private void comprarSuministroDelProveedor(TipoSuministro tipo) {
-        try {
-            proveedor.venderSuministro(tienda, tipo);
-            log("Compraste 1 unidad de " + tipo + ".");
-        } catch (StockInsuficienteException | PresupuestoInsuficienteException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se pudo comprar", JOptionPane.WARNING_MESSAGE);
-        } finally {
-            actualizarPresupuesto();
-        }
-    }
 
     // Detalle y cuidado de una mascota
     /**
@@ -246,4 +198,5 @@ public class VentanaPrincipal extends JFrame {
         areaRegistro.append("[" + formatoHora.format(new Date()) + "] " + mensaje + "\n");
         areaRegistro.setCaretPosition(areaRegistro.getDocument().getLength());
     }
+
 }

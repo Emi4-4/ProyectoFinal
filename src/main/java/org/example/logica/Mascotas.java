@@ -117,6 +117,9 @@ public abstract class Mascotas {
             this.nivelSalud = nivelSalud; // Cualquier valor normal entre 0 y 100
         }
     }
+    public String getRaza() {
+        return getClass().getSimpleName();
+    }
 
     @Override
     public String toString() {

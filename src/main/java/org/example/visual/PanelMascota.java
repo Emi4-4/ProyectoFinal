@@ -38,7 +38,8 @@ public class PanelMascota extends JPanel implements MascotaObserver {
         setPreferredSize(new Dimension(140, 120));
         setBackground(Color.WHITE);
 
-        etiquetaIcono = new JLabel(IconLoader.obtenerIconoMascota(mascota.getTipo(), 48));
+        System.out.println(mascota.getTipo());
+        etiquetaIcono = new JLabel(IconLoader.obtenerIconoMascota(mascota.getRaza(), 48));
         etiquetaIcono.setHorizontalAlignment(SwingConstants.CENTER);
 
         etiquetaNombre = new JLabel(mascota.getNombre(), SwingConstants.CENTER);
