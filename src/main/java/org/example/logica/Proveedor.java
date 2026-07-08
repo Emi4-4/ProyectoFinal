@@ -1,8 +1,12 @@
 package org.example.logica;
 
+import java.io.StreamCorruptedException;
+
 public class Proveedor {
+    private static Proveedor instancia;
 
     private Deposito<Mascotas> stockMascotas;
+    private Deposito<Suministro> stockSuministros;
 
     private static final int PRECIO_GATO = 5000;
     private static final int PRECIO_PERRO = 6000;
@@ -11,12 +15,12 @@ public class Proveedor {
 
     public Proveedor() {
         stockMascotas = new Deposito<>();
+        stockSuministros = new Deposito<>();
         inicializarStock();
     }
 
 
     private void inicializarStock() {
-
         // Mascotas
         stockMascotas.addProducto(new Siames(1, "Siames", "Gato"));
         stockMascotas.addProducto(new Calico(2, "Calico", "Gato"));
@@ -27,7 +31,12 @@ public class Proveedor {
         stockMascotas.addProducto(new PezDorado(7, "Pez Dorado", "Pez"));
         stockMascotas.addProducto(new PezPayaso(8, "Pez Payaso", "Pez"));
 
-
+        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_GATO));
+        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PERRO));
+        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PEZ));
+        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PAJARO));
+        stockSuministros.addProducto(new Suministro(TipoSuministro.MEDICINA));
+        stockSuministros.addProducto(new Suministro(TipoSuministro.SHAMPOO));
     }
 
     private int siguienteId = 9;
@@ -49,15 +58,14 @@ public class Proveedor {
     }
 
 
-    public boolean venderMascota(Tienda tienda, int idMascota) {
+    public boolean venderMascota(Tienda tienda, int idMascota) throws  MascotaNoEncontradaException{
 
         Mascotas mascota = stockMascotas.buscarElemento(
                 m -> m.getId() == idMascota
         );
 
         if (mascota == null) {
-            System.out.println("La mascota no existe.");
-            return false;
+            throw new MascotaNoEncontradaException("La mascota con ID " + idMascota + " no existe en el proveedor.");
         }
 
         int precio;
@@ -106,13 +114,20 @@ public class Proveedor {
         return true;
     }
 
-    public boolean venderSuministro(Tienda tienda, TipoSuministro tipo) {
+    public boolean venderSuministro(Tienda tienda, TipoSuministro tipo) throws StockInsuficienteException, PresupuestoInsuficienteException {
 
         if (tienda.getPresupuesto() < tipo.getPrecio()) {
-            System.out.println("Presupuesto insuficiente.");
-            return false;
+            throw new PresupuestoInsuficienteException(
+                    "Presupuesto insuficiente para comprar " + tipo + " (cuesta $" + tipo.getPrecio() + ").");
         }
-
+        Suministro suministro = stockSuministros.buscarElemento(s -> s.getTipo() == tipo);
+        if (suministro == null) {
+            throw new StockInsuficienteException("No hay stock de " + tipo + " en el proveedor.");
+        }
+        if (tienda.getPresupuesto() < tipo.getPrecio()) {
+            throw new PresupuestoInsuficienteException(
+                    "Presupuesto insuficiente para comprar " + tipo + " (cuesta $" + tipo.getPrecio() + ").");
+        }
         tienda.setPresupuesto(
                 tienda.getPresupuesto() - tipo.getPrecio()
         );
@@ -120,8 +135,21 @@ public class Proveedor {
         tienda.getInventarioSuministros()
                 .addProducto(new Suministro(tipo));
 
+        stockSuministros.removerElemento(suministro);
         System.out.println("Se compró " + tipo);
 
         return true;
+    }
+    /**
+     * Obtiene la única instancia del proveedor (patrón Singleton),
+     * creándola la primera vez que se solicita.
+     *
+     * @return la instancia compartida de {@link Proveedor}
+     */
+    public static synchronized Proveedor getInstancia() {
+        if (instancia == null) {
+            instancia = new Proveedor();
+        }
+        return instancia;
     }
 }
