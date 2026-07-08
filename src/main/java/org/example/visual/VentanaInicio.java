@@ -28,9 +28,6 @@ public class VentanaInicio extends JFrame{
     }
     private void agregarMascotasIniciales(Tienda tienda) {
         // Agregar mascotas iniciales para empezar
-        tienda.agregarMascota(MascotaFactory.crearMascota("Gato", 101, "Michi"));
-        tienda.agregarMascota(MascotaFactory.crearMascota("Gato", 102, "Simba"));
-        tienda.agregarMascota(MascotaFactory.crearMascota("Perro", 103, "Rocky"));
     }
     private void iniciarComponentes(){
         JLabel lblTitulo = new JLabel(IconLoader.obtenerIconoMascota(null, 64));
