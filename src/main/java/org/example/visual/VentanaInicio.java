@@ -6,15 +6,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Primera ventana mostrada al iniciar la aplicación: solicita al usuario
+ * el presupuesto inicial con el que comenzará a administrar su tienda de
+ * mascotas y luego abre el {@link VentanaPrincipal panel principal}.
+ */
+
 public class VentanaInicio extends JFrame{
     private JTextField txtPresupuesto;
     private JButton botonIniciar;
 
     public VentanaInicio(){
-
         setTitle("Tienda de Mascotas - Inicio");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 200);
+        setSize(420, 220);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -23,15 +28,17 @@ public class VentanaInicio extends JFrame{
     }
     private void agregarMascotasIniciales(Tienda tienda) {
         // Agregar mascotas iniciales para empezar
-        tienda.agregarMascota(new Siames(1, "Michi", "Gato"));
-        tienda.agregarMascota(new Siames(2, "Luna", "Gato"));
-        tienda.agregarMascota(new Siames(3, "Simba", "Gato"));
+        tienda.agregarMascota(MascotaFactory.crearMascota("Gato", 101, "Michi"));
+        tienda.agregarMascota(MascotaFactory.crearMascota("Gato", 102, "Simba"));
+        tienda.agregarMascota(MascotaFactory.crearMascota("Perro", 103, "Rocky"));
     }
     private void iniciarComponentes(){
+        JLabel lblTitulo = new JLabel(IconLoader.obtenerIconoMascota(null, 64));
         JLabel lblTexto = new JLabel("Ingrese el Presupuesto Inicial:");
         txtPresupuesto = new JTextField("20000", 15);
         botonIniciar = new JButton("Iniciar Simulación");
 
+        add(lblTitulo);
         add(lblTexto);
         add(txtPresupuesto);
         add(botonIniciar);
