@@ -128,7 +128,14 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void comprarSuministroDelProveedor(TipoSuministro tipo) {
-
+        try {
+            proveedor.venderSuministro(tienda, tipo);
+            log("Compraste 1 unidad de " + tipo + ".");
+        } catch (StockInsuficienteException | PresupuestoInsuficienteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se pudo comprar", JOptionPane.WARNING_MESSAGE);
+        } finally {
+            actualizarPresupuesto();
+        }
     }
 
     // Detalle y cuidado de una mascota
