@@ -28,8 +28,8 @@ public class Proveedor {
         stockMascotas.addProducto(new Chihuahua(4, "Chihuahua", "Perro"));
         stockMascotas.addProducto(new Colibri(5, "Colibri", "Pajaro"));
         stockMascotas.addProducto(new Tucan(6, "Tucan", "Pajaro"));
-        stockMascotas.addProducto(new PezDorado(7, "Pez Dorado", "Pez"));
-        stockMascotas.addProducto(new PezPayaso(8, "Pez Payaso", "Pez"));
+        stockMascotas.addProducto(new PezDorado(7, "PezDorado", "Pez"));
+        stockMascotas.addProducto(new PezPayaso(8, "PezPayaso", "Pez"));
 
         stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_GATO));
         stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PERRO));
@@ -103,7 +103,7 @@ public class Proveedor {
 
         stockMascotas.removerElemento(mascota);
 
-        if (stockMascotas.getSize() < 2) {
+        if (stockMascotas.getSize() < 4) {
             reponerMascotas();
             System.out.println("El proveedor ha recibido nuevas mascotas.");
         }
