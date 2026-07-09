@@ -16,6 +16,7 @@ public final class IconLoader {
     public static final String PEZ_PAYASO = "icono_pez_payaso.png";
     public static final String LOGO_TIENDA = "icono_tienda.png";
 
+
     private IconLoader() { }
 
     public static Icon obtenerIconoMascota(String nombreMascota, int tamano) {

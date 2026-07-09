@@ -21,6 +21,8 @@ import java.util.List;
  * en adoptar (patrón Observer + hilo de eventos de Swing mediante
  * {@link Timer}).
  */
+
+
 public class VentanaPrincipal extends JFrame {
     private Tienda tienda;
     private final JLabel lblPresupuesto = new JLabel();
@@ -44,6 +46,7 @@ public class VentanaPrincipal extends JFrame {
         setSize(900, 620);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setContentPane(new PanelFondo());
         setLayout(new BorderLayout(8, 8));
 
         add(construirPanelSuperior(), BorderLayout.NORTH);
@@ -73,9 +76,12 @@ public class VentanaPrincipal extends JFrame {
 
     private JScrollPane construirPanelCentral() {
         panelMascotas.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panelMascotas.setOpaque(false);
         panelMascotas.setBorder(new TitledBorder("Mis mascotas (clic para ver detalle y cuidarlas)"));
         JScrollPane scroll = new JScrollPane(panelMascotas);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
         return scroll;
     }
 
@@ -160,24 +166,101 @@ public class VentanaPrincipal extends JFrame {
     private interface MascotaObserverSwing extends MascotaObserver {
     }
 
-    // Simulación de clientes
+    /**
+     * Logica encargada de simular clientes para la tienda, ademas de darles tiempos de oferta y compra.
+     */
+    //
     private void iniciarSimulacionClientes() {
-        Timer timer = new Timer(9000, e -> {
-            if (tienda.getInventarioMascotas().getSize() == 0) {
-                return;
-            }
-            Cliente cliente = tienda.generarCliente();
-            boolean vendida = tienda.atenderCliente(cliente);
-            if (vendida) {
-                log("Cliente " + cliente.getNombre() + " adoptó a " + cliente.getMascotaComprada().getNombre()
-                        + " (" + cliente.getSonidoMascotaComprada() + ")");
+            Timer timer = new Timer(40000, e -> mostrarSolicitudCliente());
+            timer.start();
+        }
+
+    private void mostrarSolicitudCliente() {
+
+        if (tienda.getInventarioMascotas().getSize() == 0) {
+            return;
+        }
+        Cliente cliente = tienda.generarCliente();
+        Mascotas mascota = cliente.getMascotaDeseada();
+
+        JDialog popup = new JDialog(this);
+        popup.setUndecorated(true);
+        popup.setSize(300, 180);
+        popup.setLocation(
+                getX() + getWidth() - 320,
+                getY() + getHeight() - 220
+        );
+
+        JPanel panel = new JPanel(new BorderLayout(5,5));
+        JLabel imagenCliente = new JLabel(
+                new ImageIcon(getClass().getResource("/images/icono_cliente.jpg"))
+        );
+        JLabel texto = new JLabel(
+                "<html>"
+                        + "Cliente: " + cliente.getNombre()
+                        + "<br>Quiere comprar: "
+                        + mascota.getNombre()
+                        + "<br>Precio ofrecido: $"
+                        + cliente.getPresupuesto()
+                        + "<br><br>Tiempo restante: 10 segundos"
+                        + "</html>"
+        );
+
+        JButton aceptar = new JButton("Aceptar");
+        JButton rechazar = new JButton("Rechazar");
+
+
+        aceptar.addActionListener(e -> {
+
+            if (tienda.venderMascota(cliente)) {
+
+                log(cliente.getNombre()
+                        + " adoptó a "
+                        + mascota.getNombre());
+
                 refrescarMascotas();
                 actualizarPresupuesto();
-            } else {
-                log("Cliente " + cliente.getNombre() + " visitó la tienda pero no compró nada.");
             }
+            popup.dispose();
         });
-        timer.start();
+
+        rechazar.addActionListener(e -> {
+                    log(cliente.getNombre() + " rechazó la compra.");
+            popup.dispose();
+        });
+
+        JPanel botones = new JPanel();
+        botones.add(aceptar);
+        botones.add(rechazar);
+
+        panel.add(imagenCliente, BorderLayout.WEST);
+        panel.add(texto, BorderLayout.CENTER);
+        panel.add(botones, BorderLayout.SOUTH);
+
+        popup.add(panel);
+        popup.setVisible(true);
+
+        iniciarCuentaRegresiva(popup, texto);
+    }
+
+    private void iniciarCuentaRegresiva(JDialog popup, JLabel texto) {
+        final int[] tiempo = {10};
+        Timer cuenta = new Timer(1000, e -> {
+            tiempo[0]--;
+            texto.setText(
+                    "<html>"
+                            + texto.getText()
+                            + "<br>Tiempo restante: "
+                            + tiempo[0]
+                            + "</html>"
+            );
+
+            if(tiempo[0] <= 0){
+                log("El cliente se fue sin comprar.");
+                popup.dispose();
+                ((Timer)e.getSource()).stop();}
+        });
+        cuenta.start();
     }
 
     // Utilidades de refresco

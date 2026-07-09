@@ -17,25 +17,45 @@ public class Tienda {
     }
 
     public Cliente generarCliente() {
+
+        if (inventarioMascotas.getSize() == 0) {
+            return null;
+        }
+
         String nombre = nombresClientes[random.nextInt(nombresClientes.length)];
         int presupuesto = 5000 + random.nextInt(15000);
-        return new Cliente(random.nextInt(1000), nombre, presupuesto);
+
+        Cliente cliente = new Cliente(random.nextInt(1000), nombre, presupuesto);
+
+        int indice = random.nextInt(inventarioMascotas.getSize());
+
+        Mascotas mascota =
+                inventarioMascotas.obtenerTodos().get(indice);
+
+        cliente.setMascotaDeseada(mascota);
+
+        return cliente;
     }
-    public boolean atenderCliente(Cliente cliente){
-        if (inventarioMascotas.buscarElemento(m -> true) == null) {
-            System.out.println("No hay mascotas disponibles para vender.");
+
+    public boolean venderMascota(Cliente cliente) {
+
+        Mascotas mascota = cliente.getMascotaDeseada();
+
+        if (mascota == null)
             return false;
-        }
-        Mascotas mascota = inventarioMascotas.buscarElemento(m -> true);
-        int precio = 2000 + random.nextInt(8000);
-        if (cliente.getPresupuesto() >= precio){
-            cliente.comprarMascota(mascota, precio);
-            inventarioMascotas.getProducto(); // Remover mascota del inventario
-            this.presupuesto+=precio;
-            return true;
-        }
-        return false;
+
+        int precio = cliente.getPresupuesto();
+
+        if (!cliente.comprarMascota(mascota, precio))
+            return false;
+
+        inventarioMascotas.removerElemento(mascota);
+
+        presupuesto += precio;
+
+        return true;
     }
+
 
     public String obtenerEstadoMascotas() {
         StringBuilder sb = new StringBuilder();

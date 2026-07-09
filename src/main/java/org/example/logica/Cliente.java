@@ -11,6 +11,7 @@ public class Cliente {
     private String nombre;
     private int presupuesto;
     private Mascotas mascotaComprada;
+    private Mascotas mascotaDeseada;
 
     /**
      * @param id          identificador único del cliente
@@ -53,6 +54,10 @@ public class Cliente {
     public String getNombre() {
         return nombre;
     }
+
+    public void setMascotaDeseada(Mascotas mascota){this.mascotaDeseada = mascota;}
+
+    public Mascotas getMascotaDeseada(){return mascotaDeseada;}
 
     /** @return la mascota comprada por este cliente, o {@code null} si aún no compra ninguna */
     public Mascotas getMascotaComprada() {
