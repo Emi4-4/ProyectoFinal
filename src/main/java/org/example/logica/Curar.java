@@ -23,7 +23,7 @@ public class Curar implements Actividad {
         int efecto = medicina.getTipo().getEfecto();
         mascota.setNivelSalud(mascota.getNivelSalud() + efecto);
 
-        inventario.getProducto();
+        inventario.removerElemento(medicina);
 
         System.out.println(mascota.getNombre() + " ha sido curado.");
         System.out.println("Salud: " + mascota.getNivelSalud() + "/100");

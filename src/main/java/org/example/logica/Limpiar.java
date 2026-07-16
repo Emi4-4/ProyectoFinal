@@ -23,7 +23,7 @@ public class Limpiar implements Actividad {
         int efecto = shampoo.getTipo().getEfecto();
         mascota.setNivelHigiene(mascota.getNivelHigiene() + efecto);
 
-        inventarioSuministros.getProducto();
+        inventarioSuministros.removerElemento(shampoo);
 
         System.out.println(mascota.getNombre() + " ha sido limpiado.");
         System.out.println("Higiene actual: " + mascota.getNivelHigiene() + "/100");
