@@ -76,6 +76,8 @@ public abstract class Mascotas {
         } else {
             this.nivelHambre = nivelHambre; // Cualquier valor normal entre 0 y 100
         }
+
+        notificarObservadores();
     }
 
     //Getter y Setter (Felicidad):
@@ -91,6 +93,8 @@ public abstract class Mascotas {
         } else {
             this.nivelFelicidad = nivelFelicidad; // Cualquier valor normal entre 0 y 100
         }
+
+        notificarObservadores();
     }
 
     //Getter y Setter (Higiene):
@@ -106,6 +110,8 @@ public abstract class Mascotas {
         } else {
             this.nivelHigiene = nivelHigiene; // Cualquier valor normal entre 0 y 100
         }
+
+        notificarObservadores();
     }
 
     //Getter y Setter (Salud):
@@ -121,6 +127,8 @@ public abstract class Mascotas {
         } else {
             this.nivelSalud = nivelSalud; // Cualquier valor normal entre 0 y 100
         }
+
+        notificarObservadores();
     }
     public String getRaza() {
         return getClass().getSimpleName();
