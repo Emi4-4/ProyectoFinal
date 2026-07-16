@@ -8,4 +8,9 @@ abstract class Gato extends Mascotas{
     public TipoSuministro getAlimentoPermitido() {
         return TipoSuministro.ALIMENTO_GATO;
     }
+
+    @Override
+    public TipoAnimal getTipoAnimal() {
+        return TipoAnimal.GATO;
+    }
 }

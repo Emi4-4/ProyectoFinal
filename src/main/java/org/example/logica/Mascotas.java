@@ -11,6 +11,7 @@ public abstract class Mascotas {
     private final List<MascotaObserver> observadores = new ArrayList<>();
     public abstract TipoSuministro getAlimentoPermitido();
     public abstract String emitirSonido();
+    private Habitat habitatAsignado;
 
     public Mascotas(int id, String nombre, String tipo) {
         this.id = id;
@@ -20,6 +21,7 @@ public abstract class Mascotas {
         this.nivelHambre = 50;
         this.nivelSalud = 100;
         this.nivelHigiene = 100;
+        this.habitatAsignado = null;
     }
 
     /**
@@ -58,6 +60,9 @@ public abstract class Mascotas {
 
     public String getNombre(){ return nombre;
     }
+
+    public abstract TipoAnimal getTipoAnimal();
+
     //Getter y Setter (Hambre):
     public int getNivelHambre() {
         return nivelHambre;
@@ -119,6 +124,21 @@ public abstract class Mascotas {
     }
     public String getRaza() {
         return getClass().getSimpleName();
+    }
+
+    /**
+     * @return el hábitat donde vive esta mascota, o null si no tiene
+     */
+    public Habitat getHabitat() {
+        return habitatAsignado;
+    }
+
+    /**
+     * Asigna un hábitat a esta mascota
+     * @param habitat hábitat donde vivirá la mascota
+     */
+    public void setHabitat(Habitat habitat) {
+        this.habitatAsignado = habitat;
     }
 
     @Override

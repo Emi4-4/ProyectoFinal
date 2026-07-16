@@ -9,4 +9,9 @@ abstract class Pajaro extends Mascotas {
     public TipoSuministro getAlimentoPermitido() {
         return TipoSuministro.ALIMENTO_PAJARO;
     }
+
+    @Override
+    public TipoAnimal getTipoAnimal() {
+        return TipoAnimal.PAJARO;
+    }
 }

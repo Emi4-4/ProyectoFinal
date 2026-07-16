@@ -8,4 +8,9 @@ abstract class Perro extends Mascotas{
     public TipoSuministro getAlimentoPermitido() {
         return TipoSuministro.ALIMENTO_PERRO;
     }
+
+    @Override
+    public TipoAnimal getTipoAnimal() {
+        return TipoAnimal.PERRO;
+    }
 }
