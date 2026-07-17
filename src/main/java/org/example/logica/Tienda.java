@@ -134,8 +134,9 @@ public class Tienda {
         );
 
         if (habitatDisponible == null) {
-            System.out.println("❌ No hay hábitats disponibles para " + mascota.getNombre());
-            return false;
+            throw new IllegalStateException(
+                    "❌ No hay hábitats disponibles para " + mascota.getNombre() +
+                            ". Compra un hábitat " + mascota.getTipoAnimal().getNombre() + " primero.");
         }
 
         habitatDisponible.agregarMascota(mascota);

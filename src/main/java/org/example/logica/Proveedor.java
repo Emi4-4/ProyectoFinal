@@ -68,6 +68,16 @@ public class Proveedor {
             throw new MascotaNoEncontradaException("La mascota con ID " + idMascota + " no existe en el proveedor.");
         }
 
+        Habitat habitatDisponible = tienda.getInventarioHabitats().buscarElemento(
+                h -> !h.estaLleno() && h.getTipo().getTipoAnimal() == mascota.getTipoAnimal()
+        );
+
+        if (habitatDisponible == null) {
+            throw new IllegalStateException(
+                    "No hay hábitats disponibles para " + mascota.getNombre() +
+                            ". Necesitas un " + mascota.getTipoAnimal().getNombre());
+        }
+
         int precio;
 
         switch (mascota.getTipo()) {
@@ -140,6 +150,33 @@ public class Proveedor {
 
         return true;
     }
+
+    /**
+     * Vende un hábitat a la tienda
+     * @param tienda tienda compradora
+     * @param tipo tipo de hábitat a vender
+     * @param cantidad cuántos hábitats
+     * @return true si se vendió, false si presupuesto insuficiente
+     */
+    public boolean venderHabitat(Tienda tienda, TipoHabitat tipo, int cantidad)
+            throws PresupuestoInsuficienteException {
+
+        int costoTotal = tipo.getPrecio() * cantidad;
+
+        if (tienda.getPresupuesto() < costoTotal) {
+            throw new PresupuestoInsuficienteException(
+                    "Presupuesto insuficiente para comprar " + cantidad + " " + tipo.getNombre() +
+                            " (cuesta $" + costoTotal + ").");
+        }
+
+        tienda.setPresupuesto(tienda.getPresupuesto() - costoTotal);
+        tienda.comprarHabitat(tipo, cantidad);
+
+        System.out.println("✓ Se compraron " + cantidad + " " + tipo.getNombre() + " por $" + costoTotal);
+
+        return true;
+    }
+
     /**
      * Obtiene la única instancia del proveedor (patrón Singleton),
      * creándola la primera vez que se solicita.

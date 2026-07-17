@@ -40,6 +40,23 @@ public class VentanaProveedor extends JDialog {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1, 5, 5));
 
+        // HÁBITATS
+        panel.add(new JLabel("=== HÁBITATS ==="));
+        panel.add(crearBotonHabitat(TipoHabitat.HABITAT_FELINO_PEQUEÑO));
+        panel.add(crearBotonHabitat(TipoHabitat.HABITAT_FELINO_MEDIANO));
+        panel.add(crearBotonHabitat(TipoHabitat.HABITAT_FELINO_GRANDE));
+        panel.add(crearBotonHabitat(TipoHabitat.HABITAT_CANINO_PEQUEÑO));
+        panel.add(crearBotonHabitat(TipoHabitat.HABITAT_CANINO_MEDIANO));
+        panel.add(crearBotonHabitat(TipoHabitat.HABITAT_CANINO_GRANDE));
+        panel.add(crearBotonHabitat(TipoHabitat.JAULA_PEQUEÑA));
+        panel.add(crearBotonHabitat(TipoHabitat.JAULA_MEDIANA));
+        panel.add(crearBotonHabitat(TipoHabitat.JAULA_GRANDE));
+        panel.add(crearBotonHabitat(TipoHabitat.ACUARIO_PEQUEÑO));
+        panel.add(crearBotonHabitat(TipoHabitat.ACUARIO_MEDIANO));
+        panel.add(crearBotonHabitat(TipoHabitat.ACUARIO_GRANDE));
+
+        // MASCOTAS
+        panel.add(new JLabel("=== MASCOTAS ==="));
         panel.add(crearBotonMascota("Siames", 5000));
         panel.add(crearBotonMascota("Calico", 5000));
         panel.add(crearBotonMascota("Labrador", 6000));
@@ -49,6 +66,8 @@ public class VentanaProveedor extends JDialog {
         panel.add(crearBotonMascota("PezDorado", 10000));
         panel.add(crearBotonMascota("PezPayaso", 10000));
 
+        // SUMINISTROS
+        panel.add(new JLabel("=== SUMINISTROS ==="));
         panel.add(crearBotonSuministro(TipoSuministro.ALIMENTO_GATO));
         panel.add(crearBotonSuministro(TipoSuministro.ALIMENTO_PERRO));
         panel.add(crearBotonSuministro(TipoSuministro.ALIMENTO_PEZ));
@@ -69,40 +88,133 @@ public class VentanaProveedor extends JDialog {
         add(cerrar, BorderLayout.SOUTH);
     }
 
+    /**
+     * Crea botón para comprar hábitats
+     */
+    private JButton crearBotonHabitat(TipoHabitat tipo) {
+        JButton boton = new JButton("Comprar " + tipo.getNombre() + " ($" + tipo.getPrecio() + ")");
+
+        boton.addActionListener(e -> {
+            try {
+                proveedor.venderHabitat(tienda, tipo, 1);
+                // ✓ CONFIRMACIÓN DE COMPRA
+                JOptionPane.showMessageDialog(this,
+                        "✓ Compraste: " + tipo.getNombre() + "\n" +
+                                "Precio: $" + tipo.getPrecio() + "\n" +
+                                "Presupuesto restante: $" + tienda.getPresupuesto(),
+                        "Compra Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                ventanaPrincipal.actualizarVentana();
+            } catch (PresupuestoInsuficienteException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ " + ex.getMessage(),
+                        "Presupuesto Insuficiente",
+                        JOptionPane.WARNING_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ Error: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        return boton;
+    }
+
+
     private JButton crearBotonMascota(String nombre, int precio) {
 
         JButton boton = new JButton("Comprar " + nombre + " ($" + precio + ")");
 
         boton.addActionListener(e -> {
 
-            Mascotas mascota = proveedor.getStockMascotas().buscarElemento(
-                    m -> m.getNombre().equals(nombre)
-            );
+            try {
+                Mascotas mascota = proveedor.getStockMascotas().buscarElemento(
+                        m -> m.getNombre().equals(nombre)
+                );
 
-            if (mascota != null) {
-                proveedor.venderMascota(tienda, mascota.getId());
-                ventanaPrincipal.actualizarVentana();
-            } else {
+                if (mascota != null) {
+                    proveedor.venderMascota(tienda, mascota.getId());
+                    // ✓ CONFIRMACIÓN DE COMPRA
+                    JOptionPane.showMessageDialog(this,
+                            "✓ Compraste: " + mascota.getNombre() + "\n" +
+                                    "Precio: $" + precio + "\n" +
+                                    "Presupuesto restante: $" + tienda.getPresupuesto(),
+                            "Mascota Adquirida",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    ventanaPrincipal.actualizarVentana();
+
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "No hay " + nombre + " disponibles.",
+                            "Sin Stock",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (IllegalStateException ex) {
                 JOptionPane.showMessageDialog(this,
-                        "No hay " + nombre + " disponibles.");
+                        "❌ " + ex.getMessage(),
+                        "No hay Hábitat",
+                        JOptionPane.WARNING_MESSAGE);
+            } catch (PresupuestoInsuficienteException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ " + ex.getMessage(),
+                        "Presupuesto Insuficiente",
+                        JOptionPane.WARNING_MESSAGE);
+            } catch (MascotaNoEncontradaException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ Error: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
         return boton;
+
     }
 
     private JButton crearBotonSuministro(TipoSuministro tipo){
 
-        JButton boton =
-                new JButton("Comprar "+tipo);
+        JButton boton = new JButton("Comprar " + tipo + " ($" + tipo.getPrecio() + ")");
 
         boton.addActionListener(e->{
 
-            proveedor.venderSuministro(tienda,tipo);
-            ventanaPrincipal.actualizarVentana();
+            try {
+                proveedor.venderSuministro(tienda, tipo);
 
+                // ✓ CONFIRMACIÓN DE COMPRA
+                JOptionPane.showMessageDialog(this,
+                        "✓ Compraste: " + tipo + "\n" +
+                                "Precio: $" + tipo.getPrecio() + "\n" +
+                                "Presupuesto restante: $" + tienda.getPresupuesto(),
+                        "Compra Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+                ventanaPrincipal.actualizarVentana();
+
+            } catch (PresupuestoInsuficienteException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ " + ex.getMessage(),
+                        "Presupuesto Insuficiente",
+                        JOptionPane.WARNING_MESSAGE);
+            } catch (StockInsuficienteException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ " + ex.getMessage(),
+                        "Sin Stock",
+                        JOptionPane.WARNING_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ Error: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         return boton;
+
     }
 
 }
