@@ -16,9 +16,9 @@ public class Curar implements Actividad {
         );
 
         if(medicina == null){
-            System.out.println("No quedan medicinas.");
-            return;
+            throw new IllegalStateException("No quedan medicinas en el inventario.");
         }
+
 
         int efecto = medicina.getTipo().getEfecto();
         mascota.setNivelSalud(mascota.getNivelSalud() + efecto);

@@ -12,8 +12,8 @@ public class Alimentar implements Actividad {
                 suministro -> suministro.getTipo() == mascota.getAlimentoPermitido()
         );
         if (comidaAdecuada == null) {
-            System.out.println("No quedan existencias de " + mascota.getAlimentoPermitido() + " en el inventario.");
-            return;
+            throw new IllegalStateException("No quedan existencias de " +
+                    mascota.getAlimentoPermitido() + " en el inventario.");
         }
 
         int hambreActual = mascota.getNivelHambre();

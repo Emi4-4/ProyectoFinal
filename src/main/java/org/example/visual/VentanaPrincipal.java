@@ -151,9 +151,22 @@ public class VentanaPrincipal extends JFrame {
     private JButton botonActividad(String etiqueta, Actividad actividad, Mascotas mascota) {
         JButton boton = new JButton(etiqueta);
         boton.addActionListener(e -> {
-            // en caso de que no se encuentre mascota, debería haber una exception
-            tienda.ejecutarActividadEnMascota(mascota.getId(), actividad);
-            log(etiqueta + " -> " + mascota.getNombre());
+            try {
+                tienda.ejecutarActividadEnMascota(mascota.getId(), actividad);
+                log(etiqueta + " -> " + mascota.getNombre());
+            } catch (IllegalStateException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ " + ex.getMessage(),
+                        "Error - Falta de suministro",
+                        JOptionPane.WARNING_MESSAGE);
+                log("ERROR: " + ex.getMessage());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ Error inesperado: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                log("ERROR: " + ex.getMessage());
+            }
         });
         return boton;
     }

@@ -16,8 +16,7 @@ public class Limpiar implements Actividad {
         );
 
         if (shampoo == null) {
-            System.out.println("No queda shampoo en el inventario.");
-            return;
+            throw new IllegalStateException("No queda shampoo en el inventario.");
         }
 
         int efecto = shampoo.getTipo().getEfecto();
