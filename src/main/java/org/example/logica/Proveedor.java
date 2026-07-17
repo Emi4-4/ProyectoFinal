@@ -124,31 +124,60 @@ public class Proveedor {
         return true;
     }
 
-    public boolean venderSuministro(Tienda tienda, TipoSuministro tipo) throws StockInsuficienteException, PresupuestoInsuficienteException {
+    public boolean venderSuministro(Tienda tienda, TipoSuministro tipo, int cantidad) throws StockInsuficienteException, PresupuestoInsuficienteException {
 
-        if (tienda.getPresupuesto() < tipo.getPrecio()) {
+        // Validar que hay suficiente stock
+        int stockActual = contarSuministro(tipo);
+        if (stockActual < cantidad) {
+            throw new StockInsuficienteException(
+                    "Solo hay " + stockActual + " unidades de " + tipo +
+                            " disponibles (intentaste comprar " + cantidad + ").");
+        }
+
+        int costoTotal = tipo.getPrecio() * cantidad;
+
+        // Validar presupuesto
+        if (tienda.getPresupuesto() < costoTotal) {
             throw new PresupuestoInsuficienteException(
-                    "Presupuesto insuficiente para comprar " + tipo + " (cuesta $" + tipo.getPrecio() + ").");
+                    "Presupuesto insuficiente. Necesitas $" + costoTotal +
+                            " pero tienes $" + tienda.getPresupuesto());
         }
-        Suministro suministro = stockSuministros.buscarElemento(s -> s.getTipo() == tipo);
-        if (suministro == null) {
-            throw new StockInsuficienteException("No hay stock de " + tipo + " en el proveedor.");
-        }
-        if (tienda.getPresupuesto() < tipo.getPrecio()) {
-            throw new PresupuestoInsuficienteException(
-                    "Presupuesto insuficiente para comprar " + tipo + " (cuesta $" + tipo.getPrecio() + ").");
-        }
-        tienda.setPresupuesto(
-                tienda.getPresupuesto() - tipo.getPrecio()
-        );
 
-        tienda.getInventarioSuministros()
-                .addProducto(new Suministro(tipo));
+        // Restar presupuesto
+        tienda.setPresupuesto(tienda.getPresupuesto() - costoTotal);
 
-        stockSuministros.removerElemento(suministro);
-        System.out.println("Se compró " + tipo);
+        // Comprar suministro
+        tienda.comprarSuministro(tipo, cantidad);
+
+        // Remover del stock del proveedor
+        removerSuministro(tipo, cantidad);
+
+        System.out.println("✓ Se compraron " + cantidad + " " + tipo + " por $" + costoTotal);
 
         return true;
+    }
+
+    /**
+     * Cuenta cuántas unidades de un suministro hay en stock
+     */
+    private int contarSuministro(TipoSuministro tipo) {
+        return (int) stockSuministros.obtenerTodos().stream()
+                .filter(s -> s.getTipo() == tipo)
+                .count();
+    }
+
+    /**
+     * Remueve suministros del stock del proveedor
+     */
+    private void removerSuministro(TipoSuministro tipo, int cantidad) {
+        for (int i = 0; i < cantidad; i++) {
+            Suministro s = stockSuministros.buscarElemento(
+                    suministro -> suministro.getTipo() == tipo
+            );
+            if (s != null) {
+                stockSuministros.removerElemento(s);
+            }
+        }
     }
 
     /**
