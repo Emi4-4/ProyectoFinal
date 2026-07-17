@@ -178,23 +178,63 @@ public class VentanaProveedor extends JDialog {
     }
 
     private JButton crearBotonSuministro(TipoSuministro tipo){
+        int stock = proveedor.obtenerStockSuministro(tipo);
 
         JButton boton = new JButton("Comprar " + tipo + " ($" + tipo.getPrecio() + ")");
 
         boton.addActionListener(e->{
 
             try {
-                proveedor.venderSuministro(tienda, tipo);
+                // Diálogo para elegir cantidad
+                String input = JOptionPane.showInputDialog(this,
+                        "¿Cuántos " + tipo + " deseas comprar?\n" +
+                                "Stock disponible: " + stock,
+                        "1");
 
-                // ✓ CONFIRMACIÓN DE COMPRA
+                if (input == null) {
+                    return; // Usuario canceló
+                }
+
+                int cantidad = Integer.parseInt(input);
+
+                if (cantidad <= 0) {
+                    JOptionPane.showMessageDialog(this,
+                            "❌ Ingresa una cantidad válida",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                if (cantidad > stock) {
+                    JOptionPane.showMessageDialog(this,
+                            "❌ Solo hay " + stock + " disponibles",
+                            "Stock Insuficiente",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                proveedor.venderSuministro(tienda, tipo, cantidad);
+
+                int nuevoStock = proveedor.obtenerStockSuministro(tipo);
                 JOptionPane.showMessageDialog(this,
-                        "✓ Compraste: " + tipo + "\n" +
-                                "Precio: $" + tipo.getPrecio() + "\n" +
-                                "Presupuesto restante: $" + tienda.getPresupuesto(),
+                        "✓ Compraste: " + cantidad + " x " + tipo + "\n" +
+                                "Costo total: $" + (tipo.getPrecio() * cantidad) + "\n" +
+                                "Presupuesto restante: $" + tienda.getPresupuesto() + "\n" +
+                                "Stock restante en proveedor: " + nuevoStock,
                         "Compra Exitosa",
                         JOptionPane.INFORMATION_MESSAGE);
+
                 ventanaPrincipal.actualizarVentana();
 
+                // Actualizar botón con nuevo stock
+                boton.setText("Comprar " + tipo + " (Stock: " + nuevoStock + " | $" + tipo.getPrecio() + ")");
+
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "❌ Ingresa un número válido",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             } catch (PresupuestoInsuficienteException ex) {
                 JOptionPane.showMessageDialog(this,
                         "❌ " + ex.getMessage(),

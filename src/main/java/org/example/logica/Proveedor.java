@@ -166,6 +166,10 @@ public class Proveedor {
                 .count();
     }
 
+    public int obtenerStockSuministro(TipoSuministro tipo) {
+        return contarSuministro(tipo);
+    }
+
     /**
      * Remueve suministros del stock del proveedor
      */

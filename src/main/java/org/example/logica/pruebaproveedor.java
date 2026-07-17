@@ -21,9 +21,9 @@ public class pruebaproveedor {
         System.out.println("Presupuesto: " + tienda.getPresupuesto());
         System.out.println("Mascotas en tienda: " + tienda.getInventarioMascotas().getSize());
 
-        proveedor.venderSuministro(tienda, TipoSuministro.ALIMENTO_GATO);
-        proveedor.venderSuministro(tienda, TipoSuministro.ALIMENTO_GATO);
-        proveedor.venderSuministro(tienda, TipoSuministro.ALIMENTO_GATO);
+        proveedor.venderSuministro(tienda, TipoSuministro.ALIMENTO_GATO,5);
+        proveedor.venderSuministro(tienda, TipoSuministro.ALIMENTO_GATO,3);
+        proveedor.venderSuministro(tienda, TipoSuministro.ALIMENTO_GATO,2);
 
         System.out.println("Presupuesto: " + tienda.getPresupuesto());
         System.out.println("Suministro en tienda: " + tienda.getInventarioSuministros().getSize());
