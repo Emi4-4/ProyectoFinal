@@ -59,18 +59,43 @@ public class VentanaPrincipal extends JFrame {
 
     }
     private final Proveedor proveedor = new Proveedor();
+    private JPanel panelInventario;
 
     private JPanel construirPanelSuperior() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(8, 12, 4, 12));
         lblPresupuesto.setFont(lblPresupuesto.getFont().deriveFont(Font.BOLD, 16f));
-        panel.add(new JLabel(IconLoader.obtenerIconoMascota(null, 32)), BorderLayout.WEST);
-        panel.add(lblPresupuesto, BorderLayout.CENTER);
-        JButton btnProveedor = new JButton("Proveedor");
+
+        // Panel izquierdo: Presupuesto e ícono
+        JPanel izquierda = new JPanel(new BorderLayout());
+        izquierda.add(new JLabel(IconLoader.obtenerIconoMascota(null, 32)), BorderLayout.WEST);
+        izquierda.add(lblPresupuesto, BorderLayout.CENTER);
+
+        // Panel derecho: Botones
+        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+
+        JButton btnHabitats = new JButton("🏠 Hábitats");  // ← NUEVO
+        btnHabitats.addActionListener(e ->
+                new VentanaHabitats(this, tienda).setVisible(true)
+        );
+
+        JButton btnInventario = new JButton("📦 Inventario");
+        btnInventario.addActionListener(e ->
+                new VentanaInventario(this, tienda).setVisible(true)
+        );
+
+        JButton btnProveedor = new JButton("🏪 Proveedor");
         btnProveedor.addActionListener(e ->
                 new VentanaProveedor(this, tienda, proveedor).setVisible(true)
         );
-        panel.add(btnProveedor, BorderLayout.EAST);
+
+        derecha.add(btnHabitats);
+        derecha.add(btnInventario);
+        derecha.add(btnProveedor);
+
+        panel.add(izquierda, BorderLayout.WEST);
+        panel.add(derecha, BorderLayout.EAST);
+
         return panel;
     }
 
