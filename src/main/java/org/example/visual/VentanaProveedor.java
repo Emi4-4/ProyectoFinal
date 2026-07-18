@@ -2,11 +2,16 @@ package org.example.visual;
 import org.example.logica.*;
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import javax.swing.SwingUtilities;
 
 public class VentanaProveedor extends JDialog {
     private Tienda tienda;
     private Proveedor proveedor;
     private VentanaPrincipal ventanaPrincipal;
+    private java.util.Timer timerActualizacion;
+    private Map<TipoSuministro, JButton> botonesSuplemento;
+    private Map<String, JButton> botonesAnimales;
 
     public VentanaProveedor(VentanaPrincipal padre, Tienda tienda, Proveedor proveedor) {
 
@@ -14,11 +19,35 @@ public class VentanaProveedor extends JDialog {
         this.ventanaPrincipal = padre;
         this.tienda = tienda;
         this.proveedor = proveedor;
+        this.botonesSuplemento = new HashMap<>();
+        this.botonesAnimales = new HashMap<>();
 
         setSize(450, 600);
         setLocationRelativeTo(padre);
 
         construirVentana();
+
+
+        timerActualizacion = new java.util.Timer();
+        timerActualizacion.scheduleAtFixedRate(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                actualizarStockBotones();
+                actualizarStockAnimales();
+            }
+        }, 0, 2000);
+    }
+
+    private void actualizarStockBotones() {
+        SwingUtilities.invokeLater(() -> {
+            for (Map.Entry<TipoSuministro, JButton> entry : botonesSuplemento.entrySet()) {
+                TipoSuministro tipo = entry.getKey();
+                JButton boton = entry.getValue();
+                int stock = proveedor.getStockSuministro(tipo);
+
+                boton.setText("Comprar " + tipo + " (Stock: " + stock + " | $" + tipo.getPrecio() + ")");
+            }
+        });
     }
 
     private void construirVentana() {
@@ -125,6 +154,7 @@ public class VentanaProveedor extends JDialog {
     private JButton crearBotonMascota(String nombre, int precio) {
 
         JButton boton = new JButton("Comprar " + nombre + " ($" + precio + ")");
+        botonesAnimales.put(nombre, boton);
 
         boton.addActionListener(e -> {
 
@@ -177,10 +207,32 @@ public class VentanaProveedor extends JDialog {
 
     }
 
+    private void actualizarStockAnimales() {
+        SwingUtilities.invokeLater(() -> {
+            for (Map.Entry<String, JButton> entry : botonesAnimales.entrySet()) {
+                String nombre = entry.getKey();
+                JButton boton = entry.getValue();
+                int precio = proveedor.obtenerPrecioMascota(nombre);
+
+                int count = 0;
+                for (Mascotas m : proveedor.getStockMascotas().obtenerTodos()) {
+                    if (m.getNombre().equals(nombre)) {
+                        count++;
+                    }
+                }
+
+                boton.setText("Comprar " + nombre + " (Stock: " + count + " | $" + precio + ")");
+            }
+        });
+
+    }
+
     private JButton crearBotonSuministro(TipoSuministro tipo){
-        int stock = proveedor.obtenerStockSuministro(tipo);
+        int stock = proveedor.getStockSuministro(tipo);
 
         JButton boton = new JButton("Comprar " + tipo + " ($" + tipo.getPrecio() + ")");
+
+        botonesSuplemento.put(tipo, boton);
 
         boton.addActionListener(e->{
 
@@ -215,7 +267,7 @@ public class VentanaProveedor extends JDialog {
 
                 proveedor.venderSuministro(tienda, tipo, cantidad);
 
-                int nuevoStock = proveedor.obtenerStockSuministro(tipo);
+                int nuevoStock = proveedor.getStockSuministro(tipo);
                 JOptionPane.showMessageDialog(this,
                         "✓ Compraste: " + cantidad + " x " + tipo + "\n" +
                                 "Costo total: $" + (tipo.getPrecio() * cantidad) + "\n" +
@@ -255,6 +307,14 @@ public class VentanaProveedor extends JDialog {
 
         return boton;
 
+    }
+
+    @Override
+    public void dispose() {
+        if (timerActualizacion != null) {
+            timerActualizacion.cancel();
+        }
+        super.dispose();
     }
 
 }

@@ -58,7 +58,7 @@ public class VentanaPrincipal extends JFrame {
         iniciarSimulacionClientes();
 
     }
-    private final Proveedor proveedor = new Proveedor();
+    private final Proveedor proveedor = Proveedor.getInstancia();
     private JPanel panelInventario;
 
     private JPanel construirPanelSuperior() {

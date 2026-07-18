@@ -10,8 +10,8 @@ public class Proveedor {
 
     private static final int PRECIO_GATO = 5000;
     private static final int PRECIO_PERRO = 6000;
-    private static final int PRECIO_PEZ = 8000;
-    private static final int PRECIO_PAJARO = 10000;
+    private static final int PRECIO_PEZ = 2500;
+    private static final int PRECIO_PAJARO = 1100;
 
     public Proveedor() {
         stockMascotas = new Deposito<>();
@@ -21,22 +21,27 @@ public class Proveedor {
 
 
     private void inicializarStock() {
-        // Mascotas
-        stockMascotas.addProducto(new Siames(1, "Siames", "Gato"));
-        stockMascotas.addProducto(new Calico(2, "Calico", "Gato"));
-        stockMascotas.addProducto(new Labrador(3, "Labrador", "Perro"));
-        stockMascotas.addProducto(new Chihuahua(4, "Chihuahua", "Perro"));
-        stockMascotas.addProducto(new Colibri(5, "Colibri", "Pajaro"));
-        stockMascotas.addProducto(new Tucan(6, "Tucan", "Pajaro"));
-        stockMascotas.addProducto(new PezDorado(7, "PezDorado", "Pez"));
-        stockMascotas.addProducto(new PezPayaso(8, "PezPayaso", "Pez"));
 
-        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_GATO));
-        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PERRO));
-        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PEZ));
-        stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PAJARO));
-        stockSuministros.addProducto(new Suministro(TipoSuministro.MEDICINA));
-        stockSuministros.addProducto(new Suministro(TipoSuministro.SHAMPOO));
+        for (int i = 0; i < 2; i++) {
+            stockMascotas.addProducto(new Siames(siguienteId++, "Siames", "Gato"));
+            stockMascotas.addProducto(new Calico(siguienteId++, "Calico", "Gato"));
+            stockMascotas.addProducto(new Labrador(siguienteId++, "Labrador", "Perro"));
+            stockMascotas.addProducto(new Chihuahua(siguienteId++, "Chihuahua", "Perro"));
+            stockMascotas.addProducto(new Colibri(siguienteId++, "Colibri", "Pajaro"));
+            stockMascotas.addProducto(new Tucan(siguienteId++, "Tucan", "Pajaro"));
+            stockMascotas.addProducto(new PezDorado(siguienteId++, "PezDorado", "Pez"));
+            stockMascotas.addProducto(new PezPayaso(siguienteId++, "PezPayaso", "Pez"));
+        }
+
+        for (int i = 0; i < 10; i++) {
+            stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_GATO));
+            stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PERRO));
+            stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PEZ));
+            stockSuministros.addProducto(new Suministro(TipoSuministro.ALIMENTO_PAJARO));
+            stockSuministros.addProducto(new Suministro(TipoSuministro.MEDICINA));
+            stockSuministros.addProducto(new Suministro(TipoSuministro.SHAMPOO));
+        }
+        System.out.println("✓ Proveedor inicializado con stock (60 suministros totales, 8 mascotas)");
     }
 
     private int siguienteId = 9;
@@ -113,10 +118,6 @@ public class Proveedor {
 
         stockMascotas.removerElemento(mascota);
 
-        if (stockMascotas.getSize() < 4) {
-            reponerMascotas();
-            System.out.println("El proveedor ha recibido nuevas mascotas.");
-        }
 
         System.out.println("Se compró " + mascota.getNombre()
                 + " por $" + precio);
@@ -166,8 +167,11 @@ public class Proveedor {
                 .count();
     }
 
-    public int obtenerStockSuministro(TipoSuministro tipo) {
+    public int getStockSuministro(TipoSuministro tipo) {
         return contarSuministro(tipo);
+    }
+    public Deposito<Suministro> getStockSuministros() {
+        return stockSuministros;
     }
 
     /**
@@ -221,5 +225,27 @@ public class Proveedor {
             instancia = new Proveedor();
         }
         return instancia;
+    }
+
+    /**
+     * Obtiene el precio de una mascota por su nombre
+     */
+    public int obtenerPrecioMascota(String nombre) {
+        switch (nombre) {
+            case "Siames":
+            case "Calico":
+                return PRECIO_GATO;
+            case "Labrador":
+            case "Chihuahua":
+                return PRECIO_PERRO;
+            case "Colibri":
+            case "Tucan":
+                return PRECIO_PAJARO;
+            case "PezDorado":
+            case "PezPayaso":
+                return PRECIO_PEZ;
+            default:
+                return 0;
+        }
     }
 }
