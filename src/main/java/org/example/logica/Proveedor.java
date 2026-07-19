@@ -144,8 +144,6 @@ public class Proveedor {
                             " pero tienes $" + tienda.getPresupuesto());
         }
 
-        // Restar presupuesto
-        tienda.setPresupuesto(tienda.getPresupuesto() - costoTotal);
 
         // Comprar suministro
         tienda.comprarSuministro(tipo, cantidad);
