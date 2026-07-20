@@ -86,14 +86,14 @@ public class VentanaProveedor extends JDialog {
 
         // MASCOTAS
         panel.add(new JLabel("=== MASCOTAS ==="));
-        panel.add(crearBotonMascota("Siames", 5000));
-        panel.add(crearBotonMascota("Calico", 5000));
+        panel.add(crearBotonMascota("Siames", 3000));
+        panel.add(crearBotonMascota("Calico", 3000));
         panel.add(crearBotonMascota("Labrador", 6000));
         panel.add(crearBotonMascota("Chihuahua", 6000));
-        panel.add(crearBotonMascota("Colibri", 8000));
-        panel.add(crearBotonMascota("Tucan", 8000));
-        panel.add(crearBotonMascota("PezDorado", 10000));
-        panel.add(crearBotonMascota("PezPayaso", 10000));
+        panel.add(crearBotonMascota("Colibri", 4000));
+        panel.add(crearBotonMascota("Tucan", 5000));
+        panel.add(crearBotonMascota("PezDorado", 7000));
+        panel.add(crearBotonMascota("PezPayaso", 7000));
 
         // SUMINISTROS
         panel.add(new JLabel("=== SUMINISTROS ==="));
@@ -174,6 +174,7 @@ public class VentanaProveedor extends JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
 
                     ventanaPrincipal.actualizarVentana();
+                    actualizarStockAnimales();
 
                 } else {
                     JOptionPane.showMessageDialog(this,
@@ -212,7 +213,6 @@ public class VentanaProveedor extends JDialog {
             for (Map.Entry<String, JButton> entry : botonesAnimales.entrySet()) {
                 String nombre = entry.getKey();
                 JButton boton = entry.getValue();
-                int precio = proveedor.obtenerPrecioMascota(nombre);
 
                 int count = 0;
                 for (Mascotas m : proveedor.getStockMascotas().obtenerTodos()) {
@@ -221,7 +221,7 @@ public class VentanaProveedor extends JDialog {
                     }
                 }
 
-                boton.setText("Comprar " + nombre + " (Stock: " + count + " | $" + precio + ")");
+                boton.setText("Comprar " + nombre + " (Stock: " + count + ")");
             }
         });
 
@@ -277,6 +277,8 @@ public class VentanaProveedor extends JDialog {
                         JOptionPane.INFORMATION_MESSAGE);
 
                 ventanaPrincipal.actualizarVentana();
+                actualizarStockBotones();
+                actualizarStockAnimales();
 
                 // Actualizar botón con nuevo stock
                 boton.setText("Comprar " + tipo + " (Stock: " + nuevoStock + " | $" + tipo.getPrecio() + ")");
