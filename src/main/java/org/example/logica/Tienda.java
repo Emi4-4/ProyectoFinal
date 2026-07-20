@@ -1,6 +1,14 @@
 package org.example.logica;
 import java.util.Random;
 
+/**
+ * Representa la tienda de mascotas gestionada por el usuario.
+ * Contiene el inventario de mascotas, suministros y hábitats,
+ * y maneja la lógica de ventas y generación de clientes.
+ *
+ * @author Emiliano Díaz
+ * @author Valentina Serón
+ */
 public class Tienda {
     private Deposito<Mascotas> inventarioMascotas;
     private Deposito<Suministro> inventarioSuministros;
@@ -10,7 +18,11 @@ public class Tienda {
     private Random random;
 
     private String[] nombresClientes = {"Ana", "Carlos", "María", "Juan"};
-
+    /**
+     * Constructor de la tienda con presupuesto inicial.
+     *
+     * @param presupuestoInicial Monto inicial de la tienda
+     */
     public Tienda(int presupuestoInicial){
         this.presupuesto = presupuestoInicial;
         this.inventarioMascotas=new Deposito<>();
@@ -19,6 +31,12 @@ public class Tienda {
         this.random =new Random();
     }
 
+    /**
+     * Genera un cliente virtual con una mascota deseada aleatoria.
+     * La mascota se selecciona del inventario actual de la tienda.
+     *
+     * @return Cliente generado, o null si no hay mascotas en inventario
+     */
     public Cliente generarCliente() {
 
         if (inventarioMascotas.getSize() == 0) {
@@ -30,8 +48,8 @@ public class Tienda {
 
         Cliente cliente = new Cliente(random.nextInt(1000), nombre, presupuesto);
 
+        // selección de una mascota aleatoria para vender
         int indice = random.nextInt(inventarioMascotas.getSize());
-
         Mascotas mascota =
                 inventarioMascotas.obtenerTodos().get(indice);
 
@@ -40,7 +58,15 @@ public class Tienda {
         return cliente;
     }
 
-    public boolean venderMascota(Cliente cliente) {
+    /**
+     * Vende una mascota a un cliente.
+     * Verifica que la mascota deseada siga en inventario y que el cliente
+     * tenga presupuesto suficiente.
+     *
+     * @param cliente Cliente interesado en comprar una mascota
+     * @return true si la venta se concretó, false en caso contrario
+     */
+    public boolean venderMascota(Cliente cliente) throws MascotaNoEncontradaException, PresupuestoInsuficienteException{
 
         Mascotas mascota = cliente.getMascotaDeseada();
         if (mascota == null) {
@@ -53,9 +79,21 @@ public class Tienda {
         int bonusSalud = mascota.getNivelSalud() * 5;
         int precioFinal = precioBase + bonusSalud;
 
+        // verificamos que la mascota esté en el inventario
+        boolean mascotaenInventario=false;
+        for (Mascotas m:inventarioMascotas.obtenerTodos()){
+            if (m.getId() == mascota.getId()) {
+                mascotaenInventario = true;
+                mascota = m;
+                break;
+            }
+        }
+        if (!mascotaenInventario){
+            throw new MascotaNoEncontradaException("❌ No hay mascota en inventario");
+        }
+
         if (!cliente.comprarMascota(mascota, precioFinal)) {
-            System.out.println("❌ Cliente no tiene presupuesto suficiente");
-            return false;
+            throw new PresupuestoInsuficienteException("❌ Cliente no tiene presupuesto suficiente");
         }
 
         inventarioMascotas.removerElemento(mascota);
@@ -127,7 +165,7 @@ public class Tienda {
      * @param mascota mascota a asignar
      * @return true si se asignó, false si no hay hábitats disponibles
      */
-    public boolean asignarMascotaAHabitat(Mascotas mascota) {
+    public boolean asignarMascotaAHabitat(Mascotas mascota) throws IllegalStateException{
         // Buscar un hábitat con espacio disponible del tipo correcto
         Habitat habitatDisponible = inventarioHabitats.buscarElemento(
                 h -> !h.estaLleno() && h.getTipo().getTipoAnimal() == mascota.getTipoAnimal()
@@ -145,6 +183,11 @@ public class Tienda {
         return true;
     }
 
+    /**
+     * Agrega una mascota al inventario y la asigna a un hábitat disponible.
+     *
+     * @param m Mascota a agregar
+     */
     public void agregarMascota(Mascotas m){
         this.inventarioMascotas.addProducto(m);
         System.out.println(m.getNombre() + " ha sido ingresado a la tienda.");
@@ -155,12 +198,18 @@ public class Tienda {
         }
     }
 
+    /**
+     * Ejecuta una actividad sobre una mascota específica.
+     *
+     * @param id        ID de la mascota
+     * @param actividad Actividad a ejecutar (Alimentar, Jugar, etc.)
+     */
     public void ejecutarActividadEnMascota(int id, Actividad actividad) {
         Mascotas mascota = inventarioMascotas.buscarElemento(m -> m.getId() == id);
         if (mascota != null) {
             actividad.realizar(mascota);
         } else {
-            System.out.println("Error: No se encontró una mascota con el ID: " + id);
+            throw new IllegalArgumentException("Error: No se encontró una mascota con el ID: " + id);
         }
     }
 
