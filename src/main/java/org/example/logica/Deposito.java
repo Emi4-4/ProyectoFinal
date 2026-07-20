@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import java.util.function.Predicate;
- // podemos reutilizar esta clase para almacenar suministros, alimentos, medicinas
+/**
+ * Depósito para almacenar elementos de cualquier tipo.
+ * Proporciona métodos para agregar, remover y buscar elementos.
+ *
+ * @param <E> Tipo de elementos almacenados en el depósito (Mascotas, Suministros, etc)
+ * @author Emiliano Allen
+ */
 public class Deposito<E> {
 
     private final ArrayList<E> elementos;

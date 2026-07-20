@@ -1,9 +1,19 @@
 package org.example.logica;
 
+/**
+ * Clase para curar una mascota.
+ * Consume una medicina del inventario y aumenta nivel de salud.
+ *
+ * @author Lenin Díaz
+ */
 public class Curar implements Actividad {
-
     private Deposito<Suministro> inventario;
 
+    /**
+     * Constructor que recibe el inventario de suministros.
+     *
+     * @param inventario Inventario de la tienda
+     */
     public Curar(Deposito<Suministro> inventario){
         this.inventario = inventario;
     }
