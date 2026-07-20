@@ -1,8 +1,18 @@
 package org.example.logica;
 
+/**
+ * Clase para actividad concreta que permite alimentar a una mascota.
+ * Consume un suministro del tipo de alimento adecuado para la mascota
+ * y reduce su nivel de hambre según el efecto del suministro.
+ *
+ * @author Emiliano
+ */
 public class Alimentar implements Actividad {
     private Deposito<Suministro> inventarioSuministros;
-
+    /**
+    * Constructor que recibe el inventario de suministros de la tienda.
+    * @param inventarioSuministros Inventario donde se buscará la comida
+     */
     public Alimentar(Deposito<Suministro> inventarioSuministros){
         this.inventarioSuministros=inventarioSuministros;
     }
