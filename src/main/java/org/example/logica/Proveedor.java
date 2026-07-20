@@ -1,6 +1,9 @@
 package org.example.logica;
 
-import java.io.StreamCorruptedException;
+/**
+ * Clase Proveedor que gestiona el stock de mascotas, suministros y hábitats.
+ * Utiliza el patrón Singleton para garantizar una única instancia en toda la aplicación.
+ */
 
 public class Proveedor {
     private static Proveedor instancia;
@@ -13,7 +16,11 @@ public class Proveedor {
     private static final int PRECIO_PEZ = 2500;
     private static final int PRECIO_PAJARO = 1100;
 
-    public Proveedor() {
+    /**
+     * Constructor privado para Singleton.
+     * Inicializa el stock con valores por defecto.
+     */
+    private Proveedor() {
         stockMascotas = new Deposito<>();
         stockSuministros = new Deposito<>();
         inicializarStock();
@@ -62,8 +69,18 @@ public class Proveedor {
         return stockMascotas;
     }
 
-
-    public boolean venderMascota(Tienda tienda, int idMascota) throws  MascotaNoEncontradaException{
+    /**
+     * Vende una mascota a la tienda.
+     * Busca la mascota por ID en el stock, verifica hábitat disponible,
+     * descuenta el presupuesto y transfiere la mascota.
+     *
+     * @param tienda     Tienda compradora
+     * @param idMascota  ID de la mascota a comprar
+     * @return true si la venta fue exitosa
+     * @throws MascotaNoEncontradaException Si la mascota no existe en stock
+     * @throws IllegalStateException Si no hay hábitat disponible o presupuesto insuficiente
+     */
+    public boolean venderMascota(Tienda tienda, int idMascota) throws  MascotaNoEncontradaException, IllegalStateException{
 
         Mascotas mascota = stockMascotas.buscarElemento(
                 m -> m.getId() == idMascota
@@ -83,41 +100,16 @@ public class Proveedor {
                             ". Necesitas un " + mascota.getTipoAnimal().getNombre());
         }
 
-        int precio;
-
-        switch (mascota.getTipo()) {
-            case "Gato":
-                precio = PRECIO_GATO;
-                break;
-
-            case "Perro":
-                precio = PRECIO_PERRO;
-                break;
-
-            case "Pez":
-                precio = PRECIO_PEZ;
-                break;
-
-            case "Pajaro":
-                precio = PRECIO_PAJARO;
-                break;
-
-            default:
-                System.out.println("Tipo de mascota desconocido.");
-                return false;
-        }
-
+        int precio = obtenerPrecioMascota(mascota.getTipo());
+        // Verificamos presupuesto
         if (tienda.getPresupuesto() < precio) {
-            System.out.println("Presupuesto insuficiente.");
-            return false;
+            throw new IllegalStateException("Presupuesto insuficiente. Necesitas $" + precio);
         }
-
+        // ahora realizamos la compra
         tienda.setPresupuesto(tienda.getPresupuesto() - precio);
 
-        tienda.agregarMascota(mascota);
-
         stockMascotas.removerElemento(mascota);
-
+        tienda.agregarMascota(mascota);
 
         System.out.println("Se compró " + mascota.getNombre()
                 + " por $" + precio);
@@ -125,6 +117,16 @@ public class Proveedor {
         return true;
     }
 
+    /**
+     * Vende suministros a la tienda.
+     *
+     * @param tienda Tienda compradora
+     * @param tipo Tipo de suministro
+     * @param cantidad Cantidad a comprar
+     * @return true si la venta fue exitosa
+     * @throws StockInsuficienteException Si no hay suficiente stock
+     * @throws PresupuestoInsuficienteException Si el presupuesto es insuficiente
+     */
     public boolean venderSuministro(Tienda tienda, TipoSuministro tipo, int cantidad) throws StockInsuficienteException, PresupuestoInsuficienteException {
 
         // Validar que hay suficiente stock
@@ -191,7 +193,7 @@ public class Proveedor {
      * @param tienda tienda compradora
      * @param tipo tipo de hábitat a vender
      * @param cantidad cuántos hábitats
-     * @return true si se vendió, false si presupuesto insuficiente
+     * @return true si se vendió, false si presupuesto es insuficiente
      */
     public boolean venderHabitat(Tienda tienda, TipoHabitat tipo, int cantidad)
             throws PresupuestoInsuficienteException {
@@ -226,24 +228,19 @@ public class Proveedor {
     }
 
     /**
-     * Obtiene el precio de una mascota por su nombre
+     * Obtiene el precio de una mascota según su tipo.
+     *
+     * @param tipo Tipo de mascota ("Gato", "Perro", etc.)
+     * @return Precio correspondiente
      */
-    public int obtenerPrecioMascota(String nombre) {
-        switch (nombre) {
-            case "Siames":
-            case "Calico":
-                return PRECIO_GATO;
-            case "Labrador":
-            case "Chihuahua":
-                return PRECIO_PERRO;
-            case "Colibri":
-            case "Tucan":
-                return PRECIO_PAJARO;
-            case "PezDorado":
-            case "PezPayaso":
-                return PRECIO_PEZ;
-            default:
-                return 0;
+    public int obtenerPrecioMascota(String tipo) {
+        switch (tipo) {
+            case "Gato": return PRECIO_GATO;
+            case "Perro": return PRECIO_PERRO;
+            case "Pez": return PRECIO_PEZ;
+            case "Pajaro": return PRECIO_PAJARO;
+            case "Pájaro": return PRECIO_PAJARO;
+            default: throw new IllegalArgumentException("Tipo de mascota desconocido: " + tipo);
         }
     }
 }
