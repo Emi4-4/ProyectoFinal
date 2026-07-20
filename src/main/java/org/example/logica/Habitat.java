@@ -5,6 +5,8 @@ import java.util.List;
 /**
  * Representa un hábitat donde viven las mascotas.
  * Cada hábitat tiene una capacidad máxima de mascotas.
+ *
+ * @author Emiliano Allen
  */
 public class Habitat {
     private final int id;
@@ -35,8 +37,7 @@ public class Habitat {
 
         // Validar que haya espacio
         if (estaLleno()) {
-            System.out.println("❌ Error: " + tipo.getNombre() + " está lleno");
-            return false;
+            throw new IllegalStateException("Error: " + tipo.getNombre() + " está lleno");
         }
 
         mascotas.add(mascota);

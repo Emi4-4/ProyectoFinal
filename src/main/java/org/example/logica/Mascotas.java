@@ -3,7 +3,13 @@ package org.example.logica;
 import java.util.ArrayList;
 import java.util.List;
 
-// Esta clase será parecida a la de Producto en la tarea 1
+/**
+ * Clase abstracta que representa a una mascota en la tienda.
+ * Contiene los atributos de estado como salud, felicidad, salud, etc.
+ * Maneja el patrón Observer para notificar cambios en la interfaz
+ *
+ * @author Lenin Díaz
+ */
 public abstract class Mascotas {
     private final int id;
     private String nombre, tipo;
@@ -13,6 +19,13 @@ public abstract class Mascotas {
     public abstract String emitirSonido();
     private Habitat habitatAsignado;
 
+    /**
+     * Constructor de la mascota.
+     *
+     * @param id     Identificador único de la mascota
+     * @param nombre Nombre de la mascota
+     * @param tipo   Tipo de animal (Gato, Perro, Pez o Pájaro)
+     */
     public Mascotas(int id, String nombre, String tipo) {
         this.id = id;
         this.nombre = nombre;
