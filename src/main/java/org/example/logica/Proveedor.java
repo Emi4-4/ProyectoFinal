@@ -20,7 +20,7 @@ public class Proveedor {
      * Constructor privado para Singleton.
      * Inicializa el stock con valores por defecto.
      */
-    private Proveedor() {
+    Proveedor() {
         stockMascotas = new Deposito<>();
         stockSuministros = new Deposito<>();
         inicializarStock();
