@@ -58,6 +58,7 @@ public class VentanaPrincipal extends JFrame {
         iniciarSimulacionClientes();
 
     }
+
     private final Proveedor proveedor = Proveedor.getInstancia();
     private JPanel panelInventario;
 
@@ -122,6 +123,7 @@ public class VentanaPrincipal extends JFrame {
 
 
     // Detalle y cuidado de una mascota
+
     /**
      * Abre un diálogo con el detalle completo de la mascota y botones
      * para ejecutar cada {@link Actividad} disponible sobre ella.
@@ -204,14 +206,11 @@ public class VentanaPrincipal extends JFrame {
     private interface MascotaObserverSwing extends MascotaObserver {
     }
 
-    /**
-     * Logica encargada de simular clientes para la tienda, ademas de darles tiempos de oferta y compra.
-     */
-    //
+    // inicia la simulación en tiempo del cliente cada 40 segundos
     private void iniciarSimulacionClientes() {
-            Timer timer = new Timer(40000, e -> mostrarSolicitudCliente());
-            timer.start();
-        }
+        Timer timer = new Timer(40000, e -> mostrarSolicitudCliente());
+        timer.start();
+    }
 
     private void mostrarSolicitudCliente() {
 
@@ -229,7 +228,7 @@ public class VentanaPrincipal extends JFrame {
                 getY() + getHeight() - 220
         );
 
-        JPanel panel = new JPanel(new BorderLayout(5,5));
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
         JLabel imagenCliente = new JLabel(
                 new ImageIcon(getClass().getResource("/images/icono_cliente.jpg"))
         );
@@ -238,7 +237,7 @@ public class VentanaPrincipal extends JFrame {
                         + "Cliente: " + cliente.getNombre()
                         + "<br>Quiere comprar: "
                         + mascota.getNombre()
-                        + "<br>Precio ofrecido: $"
+                        + "<br>Precio que dispone: $"
                         + cliente.getPresupuesto()
                         + "<br><br>Tiempo restante: 10 segundos"
                         + "</html>"
@@ -246,24 +245,26 @@ public class VentanaPrincipal extends JFrame {
 
         JButton aceptar = new JButton("Aceptar");
         JButton rechazar = new JButton("Rechazar");
-
-
+        // esta variable servirá para marcar como verdadero la acción de haber decidido (aceptar o rechazar)
+        final boolean[] decisionVenta={false};
         aceptar.addActionListener(e -> {
-
+            decisionVenta[0]=true;
             if (tienda.venderMascota(cliente)) {
 
                 log(cliente.getNombre()
                         + " adoptó a "
                         + mascota.getNombre());
 
-                refrescarMascotas();
-                actualizarPresupuesto();
+                actualizarVentana();
+            } else {
+                log(cliente.getNombre() + " intentó comprar pero no fue posible.");
             }
             popup.dispose();
         });
 
         rechazar.addActionListener(e -> {
-                    log(cliente.getNombre() + " rechazó la compra.");
+            decisionVenta[0]=true;
+            log("Rechazaste la oferta de " + cliente.getNombre());
             popup.dispose();
         });
 
@@ -278,22 +279,39 @@ public class VentanaPrincipal extends JFrame {
         popup.add(panel);
         popup.setVisible(true);
 
-        iniciarCuentaRegresiva(popup, texto);
+        iniciarCuentaRegresiva(popup, texto, decisionVenta);
     }
 
-    private void iniciarCuentaRegresiva(JDialog popup, JLabel texto) {
+    /**
+     * Inicia una cuenta regresiva de 10 segundos para la decisión del cliente.
+     * Si el tiempo se agota y el cliente NO ha tomado una decisión, se considera
+     * que se fue sin comprar.
+     *
+     * @param popup          Diálogo a cerrar cuando termine el tiempo
+     * @param texto          Etiqueta que muestra el tiempo restante
+     * @param decisionTomada Bandera que indica si el cliente ya decidió
+     */
+    private void iniciarCuentaRegresiva(JDialog popup, JLabel texto, final boolean[] decisionTomada) {
         final int[] tiempo = {10};
         Timer cuenta = new Timer(1000, e -> {
             tiempo[0]--;
-            texto.setText(
-                    "<html>"
-                            + texto.getText()
-                            + "<br>Tiempo restante: "
-                            + tiempo[0]
-                            + "</html>"
-            );
+//            texto.setText(
+//                    "<html>"
+//                            + texto.getText()
+//                            + "<br>Tiempo restante: "
+//                            + tiempo[0]
+//                            + "</html>"
+//            );
+            // Actualizar el texto del tiempo
+            String textoActual = texto.getText();
+            // Remover la línea de tiempo anterior si existe
+            int index = textoActual.lastIndexOf("<br>Tiempo restante:");
+            if (index != -1) {
+                textoActual = textoActual.substring(0, index);
+            }
+            texto.setText(textoActual + "<br>Tiempo restante: " + tiempo[0] + " segundos</html>");
 
-            if(tiempo[0] <= 0){
+            if(tiempo[0] <= 0 && !decisionTomada[0]){
                 log("El cliente se fue sin comprar.");
                 popup.dispose();
                 ((Timer)e.getSource()).stop();}
