@@ -1,77 +1,88 @@
 package org.example.logica;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SimuladorReabastecimientoTest {
 
     private Proveedor proveedor;
-    private SimuladorReabastecimiento simulador;
+    private Tienda tienda;
 
     @BeforeEach
     void setUp() {
-        proveedor = new Proveedor();
-        simulador = new SimuladorReabastecimiento(proveedor);
+        // Obtenemos la instancia Singleton del Proveedor
+        proveedor = Proveedor.getInstancia();
+        // Creamos una tienda con presupuesto suficiente para realizar compras de prueba ($100,000)[cite: 11]
+        tienda = new Tienda(100000);
     }
 
     @Test
-    void testSimuladorAumentaStockSuministros() throws InterruptedException {
-        int stockInicial = proveedor.getStockSuministros().getSize();
-        System.out.println("Stock inicial: " + stockInicial);
+    @DisplayName("Reposición del Proveedor: Debe sumar exactamente 8 mascotas nuevas al depósito")
+    void testReponerMascotasProveedor() {
+        int stockInicial = proveedor.getStockMascotas().getSize();
 
-        // Iniciar simulador
-        simulador.iniciar();
+        // Ejecutamos el reabastecimiento propio del proveedor
+        proveedor.reponerMascotas();
 
-        // Esperar 12 segundos (el simulador se ejecuta cada 10)
-        Thread.sleep(12000);
+        int stockFinal = proveedor.getStockMascotas().getSize();
 
-        int stockFinal = proveedor.getStockSuministros().getSize();
-        System.out.println("Stock final: " + stockFinal);
-
-        // Verificar que aumentó (pero no supera 20)
-        assertTrue(stockFinal <= 20, "Stock no debe superar 20");
-
-        simulador.detener();
+        // Verificamos que se sumaron 8 animales (Siames, Calico, Labrador, Chihuahua, Colibri, Tucan, PezDorado y PezPayaso)
+        assertEquals(stockInicial + 8, stockFinal,
+                "El depósito del proveedor debió aumentar en 8 mascotas tras llamar a reponerMascotas().");
     }
 
     @Test
-    void testSimuladorAumentaMascotas() throws InterruptedException {
-        int mascotasInicial = proveedor.getStockMascotas().getSize();
-        System.out.println("Mascotas iniciales: " + mascotasInicial);
+    @DisplayName("Reabastecimiento de Tienda: Debe transferir suministros y descontar presupuesto correctamente")
+    void testReabastecerSuministrosTienda() throws Exception {
+        TipoSuministro tipo = TipoSuministro.ALIMENTO_GATO;
+        int cantidadAComprar = 3;
 
-        // Iniciar simulador
-        simulador.iniciar();
+        int stockInicialProveedor = proveedor.getStockSuministro(tipo);
+        int inventarioInicialTienda = tienda.getInventarioSuministros().getSize();
+        int presupuestoInicial = tienda.getPresupuesto();
+        int costoTotal = tipo.getPrecio() * cantidadAComprar;
 
-        // Esperar 12 segundos
-        Thread.sleep(12000);
+        // La tienda se reabastece comprándole al proveedor[cite: 10]
+        proveedor.venderSuministro(tienda, tipo, cantidadAComprar);
 
-        int mascotasFinal = proveedor.getStockMascotas().getSize();
-        System.out.println("Mascotas finales: " + mascotasFinal);
+        // 1. El stock del proveedor debió disminuir[cite: 10]
+        assertEquals(stockInicialProveedor - cantidadAComprar, proveedor.getStockSuministro(tipo),
+                "El stock del proveedor debe reducirse tras la venta.");
 
-        // Verificar que no supera 12 (3 de cada tipo)
-        assertTrue(mascotasFinal <= 12, "Mascotas no deben superar 12");
+        // 2. El inventario de la tienda debió aumentar en la cantidad comprada[cite: 11]
+        assertEquals(inventarioInicialTienda + cantidadAComprar, tienda.getInventarioSuministros().getSize(),
+                "El inventario de la tienda debió incorporar los suministros comprados.");
 
-        simulador.detener();
+        // 3. El presupuesto debió descontarse según el costo total[cite: 10, 11]
+        assertEquals(presupuestoInicial - costoTotal, tienda.getPresupuesto(),
+                "El presupuesto de la tienda debió disminuir en exactamente: $" + costoTotal);
     }
 
     @Test
-    void testSimuladorNoSuperapMaximos() throws InterruptedException {
-        // Iniciar simulador múltiples veces
-        simulador.iniciar();
+    @DisplayName("Excepción: Debe fallar si la tienda intenta comprar más stock del disponible en el Proveedor")
+    void testReabastecimientoSinStockSuficiente() {
+        TipoSuministro tipo = TipoSuministro.ALIMENTO_PERRO;
+        int stockActual = proveedor.getStockSuministro(tipo);
+        int cantidadExcesiva = stockActual + 50; // Superamos intencionalmente el stock disponible[cite: 10]
 
-        // Dejar correr 30 segundos
-        Thread.sleep(30000);
+        // Verificamos que se lance la excepción correcta[cite: 10]
+        assertThrows(StockInsuficienteException.class, () -> {
+            proveedor.venderSuministro(tienda, tipo, cantidadExcesiva);
+        }, "Se esperaba StockInsuficienteException al intentar vaciar el stock del proveedor.");
+    }
 
-        int stockFinal = proveedor.getStockSuministros().getSize();
-        int mascotasFinal = proveedor.getStockMascotas().getSize();
+    @Test
+    @DisplayName("Excepción: Debe fallar si la tienda no tiene presupuesto para reabastecerse")
+    void testReabastecimientoSinPresupuesto() {
+        // Creamos una tienda con un presupuesto intencionalmente bajo[cite: 11]
+        Tienda tiendaPobre = new Tienda(10);
+        TipoSuministro tipo = TipoSuministro.MEDICINA;
 
-        // Verificar límites
-        assertTrue(stockFinal <= 20, "Suministros: " + stockFinal + " > 20");
-        assertTrue(mascotasFinal <= 12, "Mascotas: " + mascotasFinal + " > 12");
-
-        System.out.println("✓ Test pasó - Stock final: " + stockFinal + ", Mascotas: " + mascotasFinal);
-
-        simulador.detener();
+        // Verificamos que la regla financiera bloquee el reabastecimiento[cite: 10]
+        assertThrows(PresupuestoInsuficienteException.class, () -> {
+            proveedor.venderSuministro(tiendaPobre, tipo, 1);
+        }, "Se esperaba PresupuestoInsuficienteException al intentar comprar sin dinero suficiente.");
     }
 }

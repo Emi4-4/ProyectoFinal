@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-            // CAMBIO AQUÍ: Usamos getInstancia() en lugar de new Proveedor()
+
             Proveedor proveedor = Proveedor.getInstancia();
 
             // Iniciar simulador de reabastecimiento

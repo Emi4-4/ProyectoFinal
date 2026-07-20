@@ -206,7 +206,6 @@ public class Proveedor {
                             " (cuesta $" + costoTotal + ").");
         }
 
-        tienda.setPresupuesto(tienda.getPresupuesto() - costoTotal);
         tienda.comprarHabitat(tipo, cantidad);
 
         System.out.println("✓ Se compraron " + cantidad + " " + tipo.getNombre() + " por $" + costoTotal);
