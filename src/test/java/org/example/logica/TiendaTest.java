@@ -220,4 +220,26 @@ public class TiendaTest {
         assertEquals(10, perro.getNivelHigiene(), "La higiene debió bajar a 10.");
         assertEquals(saludInicial - 5, perro.getNivelSalud(), "La salud debió bajar en 5 puntos por estar en estado crítico.");
     }
+
+    @Test
+    @DisplayName("Paso del Tiempo (Salud 0): Debe remover la mascota y liberar hábitat sin sumar presupuesto")
+    void testSimularPasoDelTiempoSaludCeroRemueveSinGanancia() {
+        // 1. Setup: Compramos hábitat, agregamos mascota y guardamos el presupuesto inicial
+        tienda.comprarHabitat(TipoHabitat.HABITAT_CANINO_GRANDE, 1);
+        Mascotas perro = new Labrador(20, "Boby", "Perro");
+        tienda.agregarMascota(perro);
+        int presupuestoAntes = tienda.getPresupuesto();
+
+        // 2. Forzamos la salud a 5 y condiciones críticas para que baje a 0 en el siguiente turno
+        perro.setNivelSalud(5);
+        perro.setNivelHambre(90);
+
+        // 3. Ejecutamos el paso del tiempo
+        tienda.simularPasoDelTiempo();
+
+        // 4. Verificaciones
+        assertEquals(0, tienda.getInventarioMascotas().getSize(), "La mascota debió ser removida del inventario al llegar a salud 0.");
+        assertEquals(0, tienda.getInventarioHabitats().obtenerTodos().get(0).obtenerMascotas().size(), "El hábitat debió quedar vacío.");
+        assertEquals(presupuestoAntes, tienda.getPresupuesto(), "El presupuesto NO debió modificarse (sin ganancias).");
+    }
 }

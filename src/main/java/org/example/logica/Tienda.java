@@ -1,4 +1,6 @@
 package org.example.logica;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -214,27 +216,45 @@ public class Tienda {
     }
 
     /**
-     * Simula el paso del tiempo degradando los estados de todas las mascotas
-     * en el inventario.
+     * Simula el paso del tiempo degradando los estados de las mascotas.
+     * Si la salud de una mascota llega a 0, se remueve del inventario y del hábitat sin generar ganancias.
+     *
+     * @return Lista de mascotas que fueron removidas por salud 0
      */
-    public void simularPasoDelTiempo() {
-        // Recorremos todas las mascotas que posees actualmente en la tienda
+    public List<Mascotas> simularPasoDelTiempo() {
+        List<Mascotas> mascotasRemovidas = new ArrayList<>();
+
         for (Mascotas m : inventarioMascotas.obtenerTodos()) {
-
-            // Con el tiempo, el hambre aumenta (+5)
             m.setNivelHambre(m.getNivelHambre() + 5);
-
-            // La felicidad y la higiene disminuyen (-5)
             m.setNivelFelicidad(m.getNivelFelicidad() - 5);
             m.setNivelHigiene(m.getNivelHigiene() - 5);
 
-            // LÓGICA EXTRA DE SALUD:
-            // Si la mascota está pasando mucha hambre (> 80) o está muy sucia (< 20),
-            // su salud empieza a deteriorarse (-5)
+            // Si pasa hambre o está muy sucia, pierde salud
             if (m.getNivelHambre() > 80 || m.getNivelHigiene() < 20) {
                 m.setNivelSalud(m.getNivelSalud() - 5);
             }
+
+            // Si la salud llega a 0, la marcamos para remover
+            if (m.getNivelSalud() == 0) {
+                mascotasRemovidas.add(m);
+            }
         }
+
+        // Remoción física de la tienda (igual a vender, pero sin tocar el presupuesto)
+        for (Mascotas removida : mascotasRemovidas) {
+            inventarioMascotas.removerElemento(removida);
+
+            // Liberar espacio en el hábitat
+            Habitat habitatAnterior = removida.getHabitat();
+            if (habitatAnterior != null) {
+                habitatAnterior.removerMascota(removida);
+                System.out.println("✓ Espacio liberado en " + habitatAnterior.getTipo().getNombre());
+            }
+
+            System.out.println("❌ " + removida.getNombre() + " fue removido de la tienda por salud 0 (Sin ganancias).");
+        }
+
+        return mascotasRemovidas;
     }
 
     //getter y setter

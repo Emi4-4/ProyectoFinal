@@ -316,15 +316,20 @@ public class VentanaPrincipal extends JFrame {
 
     // Inicia el ciclo del paso del tiempo cada 30 segundos
     private void iniciarPasoDelTiempo() {
-        // 30000 milisegundos = 30 segundos (puedes cambiarlo a tu gusto)
         Timer timerTiempo = new Timer(30000, e -> {
-
-            // Solo aplicamos el tiempo si hay mascotas en la tienda
             if (tienda.getInventarioMascotas().getSize() > 0) {
-                tienda.simularPasoDelTiempo();
 
-                // Registramos el evento en el panel inferior para que el usuario se entere
+                // Ejecutamos el tiempo y recibimos las mascotas que llegaron a salud 0
+                List<Mascotas> removidas = tienda.simularPasoDelTiempo();
                 log("⌛ El tiempo avanza... Las mascotas tienen más hambre y están menos limpias.");
+
+                // Si alguna mascota desapareció, actualizamos la vista para borrar su tarjeta
+                if (!removidas.isEmpty()) {
+                    for (Mascotas m : removidas) {
+                        log("❌ " + m.getNombre() + " abandonó la tienda por salud 0 (Sin ganancias).");
+                    }
+                    actualizarVentana(); // Elimina el PanelMascota de la interfaz
+                }
             }
         });
         timerTiempo.start();
