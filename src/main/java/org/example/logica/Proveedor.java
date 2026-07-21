@@ -97,7 +97,7 @@ public class Proveedor {
         if (habitatDisponible == null) {
             throw new IllegalStateException(
                     "No hay hábitats disponibles para " + mascota.getNombre() +
-                            ". Necesitas un " + mascota.getTipoAnimal().getNombre());
+                            ". Necesitas un habitat para " + mascota.getTipoAnimal().getNombre());
         }
 
         int precio = obtenerPrecioMascota(mascota.getTipoAnimal());

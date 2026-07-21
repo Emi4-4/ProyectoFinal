@@ -113,15 +113,6 @@ public class Tienda {
         return true;
     }
 
-
-    public String obtenerEstadoMascotas() {
-        StringBuilder sb = new StringBuilder();
-        for (Mascotas m : inventarioMascotas.obtenerTodos()) {
-            sb.append(m.toString());
-        }
-        return sb.toString();
-    }
-
     public void comprarSuministro(TipoSuministro tipo, int cantidad){
         int costo = tipo.getPrecio() * cantidad;
         if (presupuesto >= costo) {
@@ -176,7 +167,7 @@ public class Tienda {
         if (habitatDisponible == null) {
             throw new IllegalStateException(
                     "❌ No hay hábitats disponibles para " + mascota.getNombre() +
-                            ". Compra un hábitat " + mascota.getTipoAnimal().getNombre() + " primero.");
+                            ". Necesitas un hábitat para " + mascota.getTipoAnimal().getNombre() + " primero.");
         }
 
         habitatDisponible.agregarMascota(mascota);
