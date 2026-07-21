@@ -12,6 +12,7 @@ public class VentanaProveedor extends JDialog {
     private java.util.Timer timerActualizacion;
     private Map<TipoSuministro, JButton> botonesSuplemento;
     private Map<String, JButton> botonesAnimales;
+    private Map<String, TipoAnimal> tiposPorMascota;
 
     public VentanaProveedor(VentanaPrincipal padre, Tienda tienda, Proveedor proveedor) {
 
@@ -21,6 +22,7 @@ public class VentanaProveedor extends JDialog {
         this.proveedor = proveedor;
         this.botonesSuplemento = new HashMap<>();
         this.botonesAnimales = new HashMap<>();
+        this.tiposPorMascota = new HashMap<>();
 
         setSize(450, 600);
         setLocationRelativeTo(padre);
@@ -86,14 +88,14 @@ public class VentanaProveedor extends JDialog {
 
         // MASCOTAS
         panel.add(new JLabel("=== MASCOTAS ==="));
-        panel.add(crearBotonMascota("Siames", 3000));
-        panel.add(crearBotonMascota("Calico", 3000));
-        panel.add(crearBotonMascota("Labrador", 6000));
-        panel.add(crearBotonMascota("Chihuahua", 6000));
-        panel.add(crearBotonMascota("Colibri", 4000));
-        panel.add(crearBotonMascota("Tucan", 5000));
-        panel.add(crearBotonMascota("PezDorado", 7000));
-        panel.add(crearBotonMascota("PezPayaso", 7000));
+        panel.add(crearBotonMascota("Siames", TipoAnimal.GATO));
+        panel.add(crearBotonMascota("Calico", TipoAnimal.GATO ));
+        panel.add(crearBotonMascota("Labrador", TipoAnimal.PERRO));
+        panel.add(crearBotonMascota("Chihuahua", TipoAnimal.PERRO));
+        panel.add(crearBotonMascota("Colibri", TipoAnimal.PAJARO));
+        panel.add(crearBotonMascota("Tucan", TipoAnimal.PAJARO));
+        panel.add(crearBotonMascota("PezDorado", TipoAnimal.PEZ));
+        panel.add(crearBotonMascota("PezPayaso", TipoAnimal.PEZ));
 
         // SUMINISTROS
         panel.add(new JLabel("=== SUMINISTROS ==="));
@@ -151,7 +153,12 @@ public class VentanaProveedor extends JDialog {
     }
 
 
-    private JButton crearBotonMascota(String nombre, int precio) {
+    private JButton crearBotonMascota(String nombre, TipoAnimal tipo) {
+
+        // 1. Guardamos la relación en el mapa
+        tiposPorMascota.put(nombre, tipo);
+
+        int precio = proveedor.obtenerPrecioMascota(tipo);
 
         JButton boton = new JButton("Comprar " + nombre + " ($" + precio + ")");
         botonesAnimales.put(nombre, boton);
@@ -221,7 +228,11 @@ public class VentanaProveedor extends JDialog {
                     }
                 }
 
-                boton.setText("Comprar " + nombre + " (Stock: " + count + ")");
+                TipoAnimal tipo = tiposPorMascota.get(nombre);
+                int precio = proveedor.obtenerPrecioMascota(tipo);
+
+                // Mantenemos el precio en el texto del botón siempre
+                boton.setText("Comprar " + nombre + " ($" + precio + ") (Stock: " + count + ")");
             }
         });
 

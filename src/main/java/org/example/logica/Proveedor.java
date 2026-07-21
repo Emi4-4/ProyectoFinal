@@ -103,7 +103,7 @@ public class Proveedor {
         int precio = obtenerPrecioMascota(mascota.getTipoAnimal());
         // Verificamos presupuesto
         if (tienda.getPresupuesto() < precio) {
-            throw new IllegalStateException("Presupuesto insuficiente. Necesitas $" + precio);
+            throw new PresupuestoInsuficienteException("Presupuesto insuficiente. Necesitas $" + precio);
         }
         // ahora realizamos la compra
         tienda.setPresupuesto(tienda.getPresupuesto() - precio);

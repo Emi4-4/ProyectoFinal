@@ -45,15 +45,18 @@ public class Tienda {
             return null;
         }
 
-        String nombre = nombresClientes[random.nextInt(nombresClientes.length)];
-        int presupuesto = 5000 + random.nextInt(15000);
-
-        Cliente cliente = new Cliente(random.nextInt(1000), nombre, presupuesto);
-
-        // selección de una mascota aleatoria para vender
+        // 1. PRIMERO seleccionamos la mascota aleatoria que el cliente querrá
         int indice = random.nextInt(inventarioMascotas.getSize());
-        Mascotas mascota =
-                inventarioMascotas.obtenerTodos().get(indice);
+        Mascotas mascota = inventarioMascotas.obtenerTodos().get(indice);
+
+        // 2. Calculamos el valor real de esa mascota
+        int precioMascota = mascota.calcularPrecioVenta();
+
+        // 3. Le damos al cliente suficiente dinero para pagarla (su valor + un extra aleatorio)
+        int presupuesto = precioMascota + random.nextInt(5000);
+
+        String nombre = nombresClientes[random.nextInt(nombresClientes.length)];
+        Cliente cliente = new Cliente(random.nextInt(1000), nombre, presupuesto);
 
         cliente.setMascotaDeseada(mascota);
 
@@ -76,10 +79,7 @@ public class Tienda {
             return false;
         }
 
-        // Calcular precio: basado en stats de la mascota
-        int precioBase = 2000;
-        int bonusSalud = mascota.getNivelSalud() * 5;
-        int precioFinal = precioBase + bonusSalud;
+        int precioFinal = mascota.calcularPrecioVenta();
 
         // verificamos que la mascota esté en el inventario
         boolean mascotaenInventario=false;

@@ -81,8 +81,8 @@ public abstract class Mascotas {
     public int calcularPrecioVenta() {
         int precioBase = obtenerPrecioBase();
 
-        int bonusSalud = this.nivelSalud * 8;
-        int bonusHigiene = this.nivelHigiene * 3;
+        int bonusSalud = this.nivelSalud * 10;
+        int bonusHigiene = this.nivelHigiene * 5;
         int bonusFelicidad = this.nivelFelicidad * 2;
         int bonusHambreSatisfecha = (100 - this.nivelHambre) * 5;
 
