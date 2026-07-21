@@ -26,9 +26,7 @@ public class VentanaInicio extends JFrame{
         setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20));
         iniciarComponentes();
     }
-    private void agregarMascotasIniciales(Tienda tienda) {
-        // Agregar mascotas iniciales para empezar
-    }
+
     private void iniciarComponentes(){
         JLabel lblTitulo = new JLabel(IconLoader.obtenerIconoMascota(null, 64));
         JLabel lblTexto = new JLabel("Ingrese el Presupuesto Inicial:");
@@ -59,7 +57,7 @@ public class VentanaInicio extends JFrame{
             }
 
             Tienda tienda = new Tienda(presupuestoInicial);
-            agregarMascotasIniciales(tienda);
+
 
             VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(tienda);
             ventanaPrincipal.setVisible(true);

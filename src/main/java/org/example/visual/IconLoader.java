@@ -3,7 +3,15 @@ package org.example.visual;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-
+/**
+ * Utilidad final para la carga y gestión centralizada de iconos de mascotas
+ * y elementos visuales de la interfaz gráfica.
+ * <p>
+ * Si los recursos de imagen no se encuentran disponibles en el directorio
+ * correspondiente, genera automáticamente un respaldo visual basado en emojis.
+ *
+ * @author Emiliano
+ */
 public final class IconLoader {
 
     public static final String GATO_CALICO = "icono_gato_calico.png";
@@ -17,8 +25,13 @@ public final class IconLoader {
     public static final String LOGO_TIENDA = "icono_tienda.png";
 
 
-    private IconLoader() { }
-
+    /**
+     * Obtiene el icono correspondiente a una mascota según su nombre o raza.
+     *
+     * @param nombreMascota Nombre o raza de la mascota
+     * @param tamano Tamaño deseado para el icono (ancho y alto)
+     * @return Instancia de {@link Icon} lista para usarse en componentes Swing
+     */
     public static Icon obtenerIconoMascota(String nombreMascota, int tamano) {
         String archivo;
         String emoji;

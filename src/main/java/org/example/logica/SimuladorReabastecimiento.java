@@ -126,8 +126,4 @@ public class SimuladorReabastecimiento {
         }
     }
 
-    public void detener() {
-        timer.cancel();
-        System.out.println("✓ Simulador detenido");
-    }
 }

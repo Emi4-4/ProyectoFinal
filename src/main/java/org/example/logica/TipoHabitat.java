@@ -1,5 +1,10 @@
 package org.example.logica;
-
+/**
+ * Enumeración que define los diferentes tipos de hábitats disponibles para comprar
+ * y alojar a los animales, especificando su capacidad, costo y compatibilidad de especie.
+ *
+ * @author Emiliano
+ */
 public enum TipoHabitat {
     // ACUARIOS (para peces)
     ACUARIO_PEQUEÑO(TipoAnimal.PEZ, 5, 300, "Acuario Pequeño"),
@@ -25,6 +30,14 @@ public enum TipoHabitat {
     private final int capacidad;
     private final int precio;
     private final String nombre;
+    /**
+     * Constructor para inicializar las propiedades de cada tipo de hábitat.
+     *
+     * @param tipoAnimal Tipo de animal compatible con este hábitat
+     * @param capacidad Cantidad máxima de mascotas que puede albergar
+     * @param precio Costo de adquisición del hábitat
+     * @param nombre Nombre descriptivo del hábitat
+     */
 
     TipoHabitat(TipoAnimal tipoAnimal, int capacidad, int precio, String nombre) {
         this.tipoAnimal = tipoAnimal;
@@ -32,7 +45,7 @@ public enum TipoHabitat {
         this.precio = precio;
         this.nombre = nombre;
     }
-
+    //getters
     public TipoAnimal getTipoAnimal() {
         return tipoAnimal;
     }

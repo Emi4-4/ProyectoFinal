@@ -53,17 +53,6 @@ public class Proveedor {
 
     private int siguienteId = 9;
 
-    public void reponerMascotas() {
-
-        stockMascotas.addProducto(new Siames(siguienteId++, "Siames", "Gato"));
-        stockMascotas.addProducto(new Calico(siguienteId++, "Calico", "Gato"));
-        stockMascotas.addProducto(new Labrador(siguienteId++, "Labrador", "Perro"));
-        stockMascotas.addProducto(new Chihuahua(siguienteId++, "Chihuahua", "Perro"));
-        stockMascotas.addProducto(new Colibri(siguienteId++, "Colibri", "Pajaro"));
-        stockMascotas.addProducto(new Tucan(siguienteId++, "Tucan", "Pajaro"));
-        stockMascotas.addProducto(new PezDorado(siguienteId++, "Pez Dorado", "Pez"));
-        stockMascotas.addProducto(new PezPayaso(siguienteId++, "Pez Payaso", "Pez"));
-    }
 
     public Deposito<Mascotas> getStockMascotas() {
         return stockMascotas;

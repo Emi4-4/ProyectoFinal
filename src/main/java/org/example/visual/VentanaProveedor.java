@@ -5,6 +5,12 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.SwingUtilities;
 
+/**
+ * Ventana de diálogo que representa al proveedor de la tienda.
+ * Permite comprar hábitats, mascotas y suministros mediante un catálogo
+ * interactivo que se actualiza periódicamente.
+ */
+
 public class VentanaProveedor extends JDialog {
     private Tienda tienda;
     private Proveedor proveedor;
@@ -13,6 +19,14 @@ public class VentanaProveedor extends JDialog {
     private Map<TipoSuministro, JButton> botonesSuplemento;
     private Map<String, JButton> botonesAnimales;
     private Map<String, TipoAnimal> tiposPorMascota;
+
+    /**
+     * Constructor que inicializa la ventana del proveedor y programa la actualización de stock.
+     *
+     * @param padre Ventana principal de la aplicación
+     * @param tienda Instancia de la tienda actual
+     * @param proveedor Proveedor encargado de suministrar los recursos
+     */
 
     public VentanaProveedor(VentanaPrincipal padre, Tienda tienda, Proveedor proveedor) {
 

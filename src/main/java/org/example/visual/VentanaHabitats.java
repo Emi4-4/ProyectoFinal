@@ -4,10 +4,22 @@ import org.example.logica.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+/**
+ * Ventana de diálogo destinada a la gestión y visualización detallada
+ * de los hábitats adquiridos en la tienda, así como de su capacidad y ocupación.
+ *
+ * @author Emiliano
+ */
 
 public class VentanaHabitats extends JDialog {
     private Tienda tienda;
 
+    /**
+     * Constructor que configura y despliega la ventana de gestión de hábitats.
+     *
+     * @param padre Ventana principal de referencia
+     * @param tienda Instancia actual de la tienda
+     */
     public VentanaHabitats(VentanaPrincipal padre, Tienda tienda) {
         super(padre, "Gestión de Hábitats", true);
         this.tienda = tienda;

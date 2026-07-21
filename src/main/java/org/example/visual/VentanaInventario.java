@@ -5,8 +5,21 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/**
+ * Ventana de diálogo encargada de desplegar el inventario actual de
+ * suministros disponibles en la tienda (alimentos, medicinas, shampoo).
+ *
+ * @author Emiliano
+ */
+
 public class VentanaInventario extends JDialog {
     private Tienda tienda;
+    /**
+     * Constructor que inicializa y estructura la ventana de inventario de suministros.
+     *
+     * @param padre Ventana principal contenedora
+     * @param tienda Instancia de la tienda
+     */
 
     public VentanaInventario(VentanaPrincipal padre, Tienda tienda) {
         super(padre, "Inventario de Suministros", true);

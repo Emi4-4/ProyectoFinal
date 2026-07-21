@@ -18,20 +18,6 @@ public class SimuladorReabastecimientoTest {
         tienda = new Tienda(100000);
     }
 
-    @Test
-    @DisplayName("Reposición del Proveedor: Debe sumar exactamente 8 mascotas nuevas al depósito")
-    void testReponerMascotasProveedor() {
-        int stockInicial = proveedor.getStockMascotas().getSize();
-
-        // Ejecutamos el reabastecimiento propio del proveedor
-        proveedor.reponerMascotas();
-
-        int stockFinal = proveedor.getStockMascotas().getSize();
-
-        // Verificamos que se sumaron 8 animales (Siames, Calico, Labrador, Chihuahua, Colibri, Tucan, PezDorado y PezPayaso)
-        assertEquals(stockInicial + 8, stockFinal,
-                "El depósito del proveedor debió aumentar en 8 mascotas tras llamar a reponerMascotas().");
-    }
 
     @Test
     @DisplayName("Reabastecimiento de Tienda: Debe transferir suministros y descontar presupuesto correctamente")
