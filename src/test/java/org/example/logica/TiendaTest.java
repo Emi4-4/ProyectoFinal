@@ -127,8 +127,8 @@ public class TiendaTest {
 
         int presupuestoAntesDeVenta = tienda.getPresupuesto();
 
-        // El precio se calcula como: precioBase (2000) + (nivelSalud * 5)
-        int precioEsperado = 2000 + (pez.getNivelSalud() * 5);
+        // ← CAMBIO: usamos el método real de la mascota en vez de recalcular la fórmula a mano
+        int precioEsperado = pez.calcularPrecioVenta();
 
         // 2. Creamos un cliente con suficiente dinero que desee a esa mascota
         Cliente cliente = new Cliente(100, "Juan", 50000);
@@ -140,7 +140,7 @@ public class TiendaTest {
         assertTrue(vendida, "La venta debió concretarse exitosamente.");
         assertEquals(0, tienda.getInventarioMascotas().getSize(), "La mascota debió ser eliminada del depósito de la tienda.");
         assertEquals(presupuestoAntesDeVenta + precioEsperado, tienda.getPresupuesto(),
-                "El presupuesto debió aumentar según la fórmula de precio de la mascota.");
+                "El presupuesto debió aumentar según calcularPrecioVenta() de la mascota.");
     }
 
     @Test

@@ -49,10 +49,12 @@ public class LimpiarTest {
 
         int higieneBefore = gato.getNivelHigiene();
 
-        // Intentar limpiar sin shampoo
-        limpiar.realizar(gato);
+        // Intentar limpiar sin shampoo debe lanzar excepción
+        assertThrows(IllegalStateException.class, () -> {
+            limpiar.realizar(gato);
+        }, "Debe lanzar IllegalStateException si no hay shampoo disponible");
 
-        // Verificar que no cambió la higiene
+        // Verificar que no cambió la higiene (la excepción se lanzó ANTES de modificarla)
         assertEquals(higieneBefore, gato.getNivelHigiene(),
                 "La higiene no debería cambiar sin shampoo");
         assertEquals(0, inventario.getSize(), "No debería haber shampoo");

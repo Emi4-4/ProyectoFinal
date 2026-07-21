@@ -12,9 +12,7 @@ public class ProveedorTest {
 
     @BeforeEach
     void setUp() {
-        // Obtenemos la instancia Singleton antes de cada prueba
         proveedor = Proveedor.getInstancia();
-        // Inicializamos una tienda con $100,000 para poder comprar tranquilamente
         tienda = new Tienda(100000);
     }
 
@@ -28,47 +26,43 @@ public class ProveedorTest {
     @Test
     @DisplayName("Venta de Mascotas: Flujo exitoso transfiere la mascota y reduce el presupuesto de la tienda")
     void testVenderMascotaExitoso() throws Exception {
-        // 1. Para poder comprar un animal, primero necesitamos comprarle un hábitat compatible en la tienda
         proveedor.venderHabitat(tienda, TipoHabitat.HABITAT_FELINO_MEDIANO, 1);
 
-        // 2. Tomamos el primer animal que haya en el stock del proveedor para comprarlo
         Mascotas mascotaAComprar = proveedor.getStockMascotas().obtenerTodos().get(0);
         int idMascota = mascotaAComprar.getId();
         int stockInicialProveedor = proveedor.getStockMascotas().getSize();
         int presupuestoAntesDeMascota = tienda.getPresupuesto();
-        int precioMascota = proveedor.obtenerPrecioMascota(mascotaAComprar.getTipo());
 
-        // 3. Ejecutamos la venta[cite: 12]
+        // ← CAMBIO: usamos getTipoAnimal() (enum) en vez de getTipo() (String)
+        int precioMascota = proveedor.obtenerPrecioMascota(mascotaAComprar.getTipoAnimal());
+
         boolean resultado = proveedor.venderMascota(tienda, idMascota);
 
-        assertTrue(resultado, "La venta debió retornar true al cumplir todas las condiciones[cite: 12].");
+        assertTrue(resultado, "La venta debió retornar true al cumplir todas las condiciones.");
         assertEquals(stockInicialProveedor - 1, proveedor.getStockMascotas().getSize(),
-                "El animal debió ser removido del depósito del proveedor[cite: 12].");
+                "El animal debió ser removido del depósito del proveedor.");
         assertEquals(presupuestoAntesDeMascota - precioMascota, tienda.getPresupuesto(),
-                "Se debió descontar el precio exacto de la mascota del presupuesto[cite: 12].");
+                "Se debió descontar el precio exacto de la mascota del presupuesto.");
         assertEquals(1, tienda.getInventarioMascotas().getSize(),
-                "La mascota debió ingresar exitosamente al inventario de la tienda[cite: 12].");
+                "La mascota debió ingresar exitosamente al inventario de la tienda.");
     }
 
     @Test
     @DisplayName("Venta de Mascotas (Excepción): Debe fallar si el ID de la mascota no existe en el proveedor")
     void testVenderMascotaInexistenteLanzaExcepcion() {
         int idInexistente = 999999;
-
         assertThrows(MascotaNoEncontradaException.class, () -> {
             proveedor.venderMascota(tienda, idInexistente);
-        }, "Debe lanzar MascotaNoEncontradaException si se pide un ID que no está en el stock[cite: 12].");
+        }, "Debe lanzar MascotaNoEncontradaException si se pide un ID que no está en el stock.");
     }
 
     @Test
     @DisplayName("Venta de Mascotas (Excepción): Debe lanzar IllegalStateException si la tienda no tiene un hábitat compatible")
     void testVenderMascotaSinHabitatLanzaExcepcion() {
-        // Buscamos un animal en el proveedor, pero NO le compramos ningún hábitat a la tienda[cite: 12]
         Mascotas mascota = proveedor.getStockMascotas().obtenerTodos().get(0);
-
         assertThrows(IllegalStateException.class, () -> {
             proveedor.venderMascota(tienda, mascota.getId());
-        }, "Debe bloquear la compra si la tienda no tiene dónde alojar a la mascota[cite: 12].");
+        }, "Debe bloquear la compra si la tienda no tiene dónde alojar a la mascota.");
     }
 
     @Test
@@ -81,21 +75,20 @@ public class ProveedorTest {
 
         boolean resultado = proveedor.venderHabitat(tienda, tipo, cantidad);
 
-        assertTrue(resultado, "La venta del hábitat debió realizarse exitosamente[cite: 12].");
+        assertTrue(resultado, "La venta del hábitat debió realizarse exitosamente.");
         assertEquals(presupuestoInicial - costoTotal, tienda.getPresupuesto(),
-                "Debe descontarse el precio del hábitat multiplicado por la cantidad comprada[cite: 12].");
+                "Debe descontarse el precio del hábitat multiplicado por la cantidad comprada.");
         assertEquals(cantidad, tienda.getInventarioHabitats().getSize(),
-                "La tienda debió recibir los hábitats en su inventario[cite: 12].");
+                "La tienda debió recibir los hábitats en su inventario.");
     }
 
     @Test
     @DisplayName("Venta de Hábitats (Excepción): Debe fallar si la tienda no tiene dinero suficiente")
     void testVenderHabitatSinPresupuestoLanzaExcepcion() {
-        Tienda tiendaSinFondos = new Tienda(50); // Presupuesto muy bajo[cite: 12]
-
+        Tienda tiendaSinFondos = new Tienda(50);
         assertThrows(PresupuestoInsuficienteException.class, () -> {
             proveedor.venderHabitat(tiendaSinFondos, TipoHabitat.HABITAT_CANINO_GRANDE, 1);
-        }, "Debe lanzar PresupuestoInsuficienteException si no alcanza el dinero para el hábitat[cite: 12].");
+        }, "Debe lanzar PresupuestoInsuficienteException si no alcanza el dinero para el hábitat.");
     }
 
     @Test
@@ -105,22 +98,17 @@ public class ProveedorTest {
         int stockDisponible = proveedor.getStockSuministro(tipo);
 
         assertThrows(StockInsuficienteException.class, () -> {
-            // Intentamos comprar más de lo que el proveedor tiene[cite: 12]
             proveedor.venderSuministro(tienda, tipo, stockDisponible + 10);
-        }, "Debe lanzar StockInsuficienteException al superar el límite disponible en el proveedor[cite: 12].");
+        }, "Debe lanzar StockInsuficienteException al superar el límite disponible en el proveedor.");
     }
 
     @Test
-    @DisplayName("Precios: obtenerPrecioMascota() debe retornar los precios constantes exactos por tipo")
-    void testObtenerPrecioMascota() {
-        assertEquals(5000, proveedor.obtenerPrecioMascota("Gato"), "El precio del Gato debe ser 5000[cite: 12].");
-        assertEquals(6000, proveedor.obtenerPrecioMascota("Perro"), "El precio del Perro debe ser 6000[cite: 12].");
-        assertEquals(2500, proveedor.obtenerPrecioMascota("Pez"), "El precio del Pez debe ser 2500[cite: 12].");
-        assertEquals(1100, proveedor.obtenerPrecioMascota("Pajaro"), "El precio del Pájaro debe ser 1100[cite: 12].");
+    @DisplayName("Precios: obtenerPrecioMascota() debe retornar el precio correcto para cada valor del enum TipoAnimal")
+    void testObtenerPrecioMascotaParaCadaTipo() {
 
-        // Probamos que lance excepción con un tipo inválido[cite: 12]
-        assertThrows(IllegalArgumentException.class, () -> {
-            proveedor.obtenerPrecioMascota("Dinosaurio");
-        }, "Debe lanzar IllegalArgumentException ante un tipo de animal desconocido[cite: 12].");
+        assertEquals(5000, proveedor.obtenerPrecioMascota(TipoAnimal.GATO), "El precio del Gato debe ser 5000.");
+        assertEquals(6000, proveedor.obtenerPrecioMascota(TipoAnimal.PERRO), "El precio del Perro debe ser 6000.");
+        assertEquals(2500, proveedor.obtenerPrecioMascota(TipoAnimal.PEZ), "El precio del Pez debe ser 2500.");
+        assertEquals(1100, proveedor.obtenerPrecioMascota(TipoAnimal.PAJARO), "El precio del Pájaro debe ser 1100.");
     }
 }
