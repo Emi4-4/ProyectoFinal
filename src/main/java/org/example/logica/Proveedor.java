@@ -100,7 +100,7 @@ public class Proveedor {
                             ". Necesitas un " + mascota.getTipoAnimal().getNombre());
         }
 
-        int precio = obtenerPrecioMascota(mascota.getTipo());
+        int precio = obtenerPrecioMascota(mascota.getTipoAnimal());
         // Verificamos presupuesto
         if (tienda.getPresupuesto() < precio) {
             throw new IllegalStateException("Presupuesto insuficiente. Necesitas $" + precio);
@@ -229,17 +229,16 @@ public class Proveedor {
     /**
      * Obtiene el precio de una mascota según su tipo.
      *
-     * @param tipo Tipo de mascota ("Gato", "Perro", etc.)
+     * @param tipoAnimal Tipo de mascota ("Gato", "Perro", etc.)
      * @return Precio correspondiente
      */
-    public int obtenerPrecioMascota(String tipo) {
-        switch (tipo) {
-            case "Gato": return PRECIO_GATO;
-            case "Perro": return PRECIO_PERRO;
-            case "Pez": return PRECIO_PEZ;
-            case "Pajaro": return PRECIO_PAJARO;
-            case "Pájaro": return PRECIO_PAJARO;
-            default: throw new IllegalArgumentException("Tipo de mascota desconocido: " + tipo);
+    public int obtenerPrecioMascota(TipoAnimal tipoAnimal) {
+        switch (tipoAnimal) {
+            case GATO: return PRECIO_GATO;
+            case PERRO: return PRECIO_PERRO;
+            case PEZ :return PRECIO_PEZ;
+            case PAJARO: return PRECIO_PAJARO;
+            default: throw new IllegalArgumentException("Tipo de mascota desconocido: " + tipoAnimal);
         }
     }
 }

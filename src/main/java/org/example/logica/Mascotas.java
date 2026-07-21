@@ -64,6 +64,34 @@ public abstract class Mascotas {
         }
     }
 
+    /**
+     * Obtiene el precio base de esta mascota según su tipo de animal.
+     * Usa polimorfismo a través de getTipoAnimal() (implementado en cada subclase),
+     * consultando la fuente única de verdad: Proveedor.
+     */
+    public int obtenerPrecioBase() {
+        return Proveedor.getInstancia().obtenerPrecioMascota(this.getTipoAnimal());
+    }
+
+    /**
+     * Calcula el precio de venta sugerido para un cliente, basado en el
+     * precio base del tipo de animal y el estado actual de sus stats.
+     * Siempre es mayor al precio base (el cuidado agrega valor).
+     */
+    public int calcularPrecioVenta() {
+        int precioBase = obtenerPrecioBase();
+
+        int bonusSalud = this.nivelSalud * 8;
+        int bonusHigiene = this.nivelHigiene * 3;
+        int bonusFelicidad = this.nivelFelicidad * 2;
+        int bonusHambreSatisfecha = (100 - this.nivelHambre) * 5;
+
+        int total = precioBase + bonusSalud + bonusHigiene + bonusFelicidad + bonusHambreSatisfecha;
+
+        // Garantiza que el cliente siempre pague más que el precio base
+        return Math.max(total, precioBase + 1000);
+    }
+
     public int getId(){ return id;
     }
 

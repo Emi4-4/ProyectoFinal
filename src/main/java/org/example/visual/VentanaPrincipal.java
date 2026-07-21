@@ -233,13 +233,16 @@ public class VentanaPrincipal extends JFrame {
         JLabel imagenCliente = new JLabel(
                 new ImageIcon(getClass().getResource("/images/icono_cliente.jpg"))
         );
+
+        int precioVentaSugerido = mascota.calcularPrecioVenta();
+
         JLabel texto = new JLabel(
                 "<html>"
                         + "Cliente: " + cliente.getNombre()
                         + "<br>Quiere comprar: "
                         + mascota.getNombre()
-                        + "<br>Precio que dispone: $"
-                        + cliente.getPresupuesto()
+                        + "<br>Precio de venta: $"
+                        + precioVentaSugerido
                         + "<br><br>Tiempo restante: 10 segundos"
                         + "</html>"
         );
