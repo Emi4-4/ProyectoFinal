@@ -56,6 +56,7 @@ public class VentanaPrincipal extends JFrame {
         refrescarMascotas();
         actualizarPresupuesto();
         iniciarSimulacionClientes();
+        iniciarPasoDelTiempo();
 
     }
 
@@ -295,13 +296,7 @@ public class VentanaPrincipal extends JFrame {
         final int[] tiempo = {10};
         Timer cuenta = new Timer(1000, e -> {
             tiempo[0]--;
-//            texto.setText(
-//                    "<html>"
-//                            + texto.getText()
-//                            + "<br>Tiempo restante: "
-//                            + tiempo[0]
-//                            + "</html>"
-//            );
+
             // Actualizar el texto del tiempo
             String textoActual = texto.getText();
             // Remover la línea de tiempo anterior si existe
@@ -317,6 +312,22 @@ public class VentanaPrincipal extends JFrame {
                 ((Timer)e.getSource()).stop();}
         });
         cuenta.start();
+    }
+
+    // Inicia el ciclo del paso del tiempo cada 30 segundos
+    private void iniciarPasoDelTiempo() {
+        // 30000 milisegundos = 30 segundos (puedes cambiarlo a tu gusto)
+        Timer timerTiempo = new Timer(30000, e -> {
+
+            // Solo aplicamos el tiempo si hay mascotas en la tienda
+            if (tienda.getInventarioMascotas().getSize() > 0) {
+                tienda.simularPasoDelTiempo();
+
+                // Registramos el evento en el panel inferior para que el usuario se entere
+                log("⌛ El tiempo avanza... Las mascotas tienen más hambre y están menos limpias.");
+            }
+        });
+        timerTiempo.start();
     }
 
     // Utilidades de refresco

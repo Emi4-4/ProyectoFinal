@@ -180,4 +180,44 @@ public class TiendaTest {
             tienda.ejecutarActividadEnMascota(999, new Jugar());
         }, "Debe lanzar IllegalArgumentException al no encontrar la mascota por ID en el inventario.");
     }
+
+    @Test
+    @DisplayName("Paso del Tiempo: Debe degradar hambre (+5), felicidad (-5) e higiene (-5) en condiciones normales")
+    void testSimularPasoDelTiempoNormal() {
+        // 1. Compramos un hábitat y agregamos una mascota (inicia con Hambre:50, Fel:50, Hig:100, Sal:100)
+        tienda.comprarHabitat(TipoHabitat.HABITAT_FELINO_PEQUEÑO, 1);
+        Mascotas gato = new Siames(10, "Garfield", "Gato");
+        tienda.agregarMascota(gato);
+
+        // 2. Simulamos el paso de un bloque de tiempo
+        tienda.simularPasoDelTiempo();
+
+        // 3. Verificamos que los stats se hayan modificado según lo esperado
+        assertEquals(55, gato.getNivelHambre(), "El hambre debió aumentar de 50 a 55 (+5).");
+        assertEquals(45, gato.getNivelFelicidad(), "La felicidad debió disminuir de 50 a 45 (-5).");
+        assertEquals(95, gato.getNivelHigiene(), "La higiene debió disminuir de 100 a 95 (-5).");
+        assertEquals(100, gato.getNivelSalud(), "La salud no debe verse afectada si el animal no está en estado crítico.");
+    }
+
+    @Test
+    @DisplayName("Paso del Tiempo (Deterioro): Debe restar salud (-5) si el hambre es > 80 o la higiene < 20")
+    void testSimularPasoDelTiempoCondicionCritica() {
+        // 1. Preparamos el entorno y la mascota
+        tienda.comprarHabitat(TipoHabitat.HABITAT_CANINO_GRANDE, 1);
+        Mascotas perro = new Labrador(11, "Firulais", "Perro");
+        tienda.agregarMascota(perro);
+
+        // 2. Forzamos un estado crítico de abandono: mucha hambre y muy sucio
+        perro.setNivelHambre(85);
+        perro.setNivelHigiene(15);
+        int saludInicial = perro.getNivelSalud(); // 100
+
+        // 3. Simulamos el paso del tiempo en esas condiciones críticas
+        tienda.simularPasoDelTiempo();
+
+        // 4. Verificamos la degradación normal y la penalización de salud
+        assertEquals(90, perro.getNivelHambre(), "El hambre debió subir a 90.");
+        assertEquals(10, perro.getNivelHigiene(), "La higiene debió bajar a 10.");
+        assertEquals(saludInicial - 5, perro.getNivelSalud(), "La salud debió bajar en 5 puntos por estar en estado crítico.");
+    }
 }

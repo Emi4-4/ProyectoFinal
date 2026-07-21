@@ -213,6 +213,30 @@ public class Tienda {
         }
     }
 
+    /**
+     * Simula el paso del tiempo degradando los estados de todas las mascotas
+     * en el inventario.
+     */
+    public void simularPasoDelTiempo() {
+        // Recorremos todas las mascotas que posees actualmente en la tienda
+        for (Mascotas m : inventarioMascotas.obtenerTodos()) {
+
+            // Con el tiempo, el hambre aumenta (+5)
+            m.setNivelHambre(m.getNivelHambre() + 5);
+
+            // La felicidad y la higiene disminuyen (-5)
+            m.setNivelFelicidad(m.getNivelFelicidad() - 5);
+            m.setNivelHigiene(m.getNivelHigiene() - 5);
+
+            // LÓGICA EXTRA DE SALUD:
+            // Si la mascota está pasando mucha hambre (> 80) o está muy sucia (< 20),
+            // su salud empieza a deteriorarse (-5)
+            if (m.getNivelHambre() > 80 || m.getNivelHigiene() < 20) {
+                m.setNivelSalud(m.getNivelSalud() - 5);
+            }
+        }
+    }
+
     //getter y setter
     public Deposito<Suministro> getInventarioSuministros() {
         return this.inventarioSuministros;

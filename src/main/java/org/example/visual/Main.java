@@ -4,7 +4,6 @@ import javax.swing.SwingUtilities;
 
 import org.example.logica.Proveedor;
 import org.example.logica.SimuladorReabastecimiento;
-import org.example.visual.VentanaInicio;
 
 public class Main {
 
