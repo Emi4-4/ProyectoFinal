@@ -36,8 +36,8 @@ public class Proveedor {
             stockMascotas.addProducto(new Chihuahua(siguienteId++, "Chihuahua", "Perro"));
             stockMascotas.addProducto(new Colibri(siguienteId++, "Colibri", "Pajaro"));
             stockMascotas.addProducto(new Tucan(siguienteId++, "Tucan", "Pajaro"));
-            stockMascotas.addProducto(new PezDorado(siguienteId++, "Pez Dorado", "Pez"));
-            stockMascotas.addProducto(new PezPayaso(siguienteId++, "Pez Payaso", "Pez"));
+            stockMascotas.addProducto(new PezDorado(siguienteId++, "PezDorado", "Pez"));
+            stockMascotas.addProducto(new PezPayaso(siguienteId++, "PezPayaso", "Pez"));
         }
 
         for (int i = 0; i < 10; i++) {
