@@ -18,9 +18,11 @@ public class Jugar implements Actividad {
     public void realizar(Mascotas mascota){
         mascota.setNivelFelicidad(mascota.getNivelFelicidad() + 20);
         mascota.setNivelHigiene(mascota.getNivelHigiene() - 10);
+        mascota.setNivelHambre(mascota.getNivelHambre() + 20);
 
         System.out.println(mascota.getNombre() + " ha jugado.");
         System.out.println("Felicidad: " + mascota.getNivelFelicidad() + "/100");
         System.out.println("Higiene: " + mascota.getNivelHigiene() + "/100");
+        System.out.println("Hambre: " + mascota.getNivelHambre() + "/100");
     }
 }

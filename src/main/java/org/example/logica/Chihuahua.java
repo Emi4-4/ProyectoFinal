@@ -20,6 +20,6 @@ public class Chihuahua extends Perro {
     }
     @Override
     public String emitirSonido() {
-        return "guau";
+        return "perro.wav";
     }
 }

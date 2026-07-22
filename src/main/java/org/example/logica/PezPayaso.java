@@ -18,6 +18,6 @@ public class PezPayaso extends Pez {
     }
     @Override
     public String emitirSonido() {
-        return "gluglu";
+        return "pez.wav";
     }
 }

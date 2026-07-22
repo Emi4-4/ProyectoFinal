@@ -19,7 +19,7 @@ public class Labrador extends Perro {
     }
     @Override
     public String emitirSonido() {
-        return "guau";
+        return "perro.wav";
     }
 
 }

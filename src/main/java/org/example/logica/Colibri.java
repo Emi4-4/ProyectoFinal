@@ -18,6 +18,6 @@ public class Colibri extends Pajaro {
     }
     @Override
     public String emitirSonido() {
-        return "sonidos de colibri";
+        return "pajaro.wav";
     }
 }

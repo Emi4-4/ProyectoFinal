@@ -108,8 +108,8 @@ public class VentanaProveedor extends JDialog {
         panel.add(crearBotonMascota("Chihuahua", TipoAnimal.PERRO));
         panel.add(crearBotonMascota("Colibri", TipoAnimal.PAJARO));
         panel.add(crearBotonMascota("Tucan", TipoAnimal.PAJARO));
-        panel.add(crearBotonMascota("PezDorado", TipoAnimal.PEZ));
-        panel.add(crearBotonMascota("PezPayaso", TipoAnimal.PEZ));
+        panel.add(crearBotonMascota("Pez Dorado", TipoAnimal.PEZ));
+        panel.add(crearBotonMascota("Pez Payaso", TipoAnimal.PEZ));
 
         // SUMINISTROS
         panel.add(new JLabel("=== SUMINISTROS ==="));

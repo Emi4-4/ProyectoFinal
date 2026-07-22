@@ -19,7 +19,7 @@ public class Siames extends Gato {
     }
     @Override
     public String emitirSonido() {
-        return "ruu-miau";
+        return "gato.wav";
     }
 
 }

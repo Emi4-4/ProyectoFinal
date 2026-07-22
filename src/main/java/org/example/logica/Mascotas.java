@@ -117,6 +117,12 @@ public abstract class Mascotas {
         } else {
             this.nivelHambre = nivelHambre; // Cualquier valor normal entre 0 y 100
         }
+        // Consecuencia de tener hambre extrema
+        if (this.nivelHambre == 100) {
+            setNivelSalud(this.nivelSalud - 15);
+            setNivelFelicidad(this.nivelFelicidad - 15);
+        }
+
 
         notificarObservadores();
     }
@@ -150,6 +156,11 @@ public abstract class Mascotas {
             this.nivelHigiene = 100; // El animal esta impecable
         } else {
             this.nivelHigiene = nivelHigiene; // Cualquier valor normal entre 0 y 100
+        }
+
+        // Consecuencia de tener mala higiene
+        if (this.nivelHigiene == 0) {
+            setNivelSalud(this.nivelSalud - 15);
         }
 
         notificarObservadores();

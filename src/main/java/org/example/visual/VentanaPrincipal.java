@@ -67,7 +67,7 @@ public class VentanaPrincipal extends JFrame {
 
         // Panel izquierdo: Presupuesto e ícono
         JPanel izquierda = new JPanel(new BorderLayout());
-        izquierda.add(new JLabel(IconLoader.obtenerIconoMascota(null, 32)), BorderLayout.WEST);
+        izquierda.add(new JLabel(IconLoader.obtenerIconoMascota("DINERO",32)), BorderLayout.WEST);
         izquierda.add(lblPresupuesto, BorderLayout.CENTER);
 
         // Panel derecho: Botones
@@ -129,27 +129,37 @@ public class VentanaPrincipal extends JFrame {
      * @param mascota mascota a mostrar en detalle
      */
     public void mostrarDetalleMascota(Mascotas mascota) {
+        SoundLoader.reproducirSonido(mascota.emitirSonido());
         JDialog dialogo = new JDialog(this, mascota.getNombre(), true);
         dialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialogo.setSize(340, 380);
         dialogo.setLocationRelativeTo(this);
         dialogo.setLayout(new BorderLayout(6, 6));
 
-        JLabel icono = new JLabel(IconLoader.obtenerIconoMascota(mascota.getTipo(), 96));
+        JLabel icono = new JLabel(IconLoader.obtenerIconoMascota(mascota.getRaza(), 96));
         icono.setHorizontalAlignment(SwingConstants.CENTER);
 
         JLabel lblEstado = new JLabel();
         lblEstado.setVerticalAlignment(SwingConstants.TOP);
-        Runnable actualizarEstado = () -> lblEstado.setText("<html><body style='width:220px'>"
+        Runnable actualizarEstado = () ->  {
+            String habitatTexto = mascota.getHabitat() == null
+                    ? "Sin asignar"
+                    :  mascota.getHabitat().getTipo().getNombre();
+            lblEstado.setText("<html><body style='width:220px'>"
                 + "<b>" + mascota.getNombre() + "</b> (" + mascota.getTipo() + ")<br>"
-                + "Sonido: " + mascota.emitirSonido() + "<br><br>"
+                    + "Hábitat: " + habitatTexto + "<br>"
                 + "Hambre: " + mascota.getNivelHambre() + "/100<br>"
                 + "Felicidad: " + mascota.getNivelFelicidad() + "/100<br>"
                 + "Higiene: " + mascota.getNivelHigiene() + "/100<br>"
                 + "Salud: " + mascota.getNivelSalud() + "/100</body></html>");
+        };
         actualizarEstado.run();
 
-        MascotaObserverSwing observadorDialogo = m -> actualizarEstado.run();
+        MascotaObserverSwing observadorDialogo = m -> {actualizarEstado.run();
+        if (m.getNivelSalud() <= 0) {
+            dialogo.dispose();
+        }};
+
         mascota.agregarObservador(observadorDialogo);
         dialogo.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

@@ -18,7 +18,7 @@ public class Calico extends Gato {
     }
     @Override
     public String emitirSonido() {
-        return "ruu-miau";
+        return "gato.wav";
     }
 
 }

@@ -23,6 +23,7 @@ public final class IconLoader {
     public static final String PEZ_DORADO = "icono_pez_dorado.png";
     public static final String PEZ_PAYASO = "icono_pez_payaso.png";
     public static final String LOGO_TIENDA = "icono_tienda.png";
+    public static final String ICONO_DINERO = "icono_dinero.png";
 
 
     /**
@@ -45,6 +46,7 @@ public final class IconLoader {
             case "Labrador": archivo = PERRO_LABRADOR; emoji = "\uD83D\uDC36"; break;
             case "PezDorado": archivo = PEZ_DORADO; emoji = "\uD83D\uDC1F"; break;
             case "PezPayaso": archivo = PEZ_PAYASO; emoji = "\uD83D\uDC1F"; break;
+            case "DINERO": archivo = ICONO_DINERO; emoji = "💰";break;
             default: archivo = LOGO_TIENDA; emoji = "\uD83D\uDC3E";
         }
         return cargarOGenerar(archivo, emoji, tamano);

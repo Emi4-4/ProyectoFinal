@@ -18,6 +18,6 @@ public class Tucan extends Pajaro {
     }
     @Override
     public String emitirSonido() {
-        return "sonidos de tucan";
+        return "pajaro.wav";
     }
 }

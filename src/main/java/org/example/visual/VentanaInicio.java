@@ -28,10 +28,10 @@ public class VentanaInicio extends JFrame{
     }
 
     private void iniciarComponentes(){
-        JLabel lblTitulo = new JLabel(IconLoader.obtenerIconoMascota(null, 64));
+        JLabel lblTitulo = new JLabel(IconLoader.obtenerIconoMascota("DINERO", 64));
         JLabel lblTexto = new JLabel("Ingrese el Presupuesto Inicial:");
         txtPresupuesto = new JTextField("20000", 15);
-        botonIniciar = new JButton("Iniciar Simulación (Compra en suministros!");
+        botonIniciar = new JButton("Iniciar Simulación (¡Compra en suministros!)");
 
         add(lblTitulo);
         add(lblTexto);
