@@ -47,16 +47,15 @@ public class CurarTest {
         inventario.getProducto();
         inventario.getProducto();
 
-        int saludBefore = gato.getNivelSalud();
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> curar.realizar(gato)
+        );
 
-        // Intentar curar sin medicina
-        curar.realizar(gato);
-
-        // Verificar que no cambió la salud
-        assertEquals(saludBefore, gato.getNivelSalud(),
-                "La salud no debería cambiar sin medicina");
-        assertEquals(0, inventario.getSize(), "No debería haber medicina");
+        assertEquals("No quedan medicinas en el inventario.", ex.getMessage());
+        assertEquals(0, inventario.getSize());
     }
+
 
     @Test
     void testCurarMultiplasVeces() {
