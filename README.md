@@ -6,7 +6,7 @@ Integrantes:
 
 Emiliano León Allen Robles
 
-Lenin Stevee Diaz Cabezo
+Lenin Steeve Diaz Cabezo
 
 Valentina Alejandra Serón Canales
 
